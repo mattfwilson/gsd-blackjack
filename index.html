@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blackjack</title>
+</head>
+<body>
+  <h1>Blackjack</h1>
+  <p>Game engine loaded. UI coming in Phase 2.</p>
+  <script type="module">
+    import { GameEngine } from './src/engine/GameEngine.js';
+    import { SoundManager } from './src/SoundManager.js';
+
+    // Verify modules load correctly
+    const engine = new GameEngine();
+    const sound = new SoundManager();
+    console.log('GameEngine initialized:', engine.placeBet ? 'OK' : 'FAIL');
+    console.log('SoundManager initialized:', sound.cardDealt ? 'OK' : 'FAIL');
+  </script>
+</body>
+</html>
