@@ -16,6 +16,8 @@ export class TableRenderer {
     this.betEl = document.getElementById('bj-bet');
     this.resultBannerEl = document.getElementById('bj-result-banner');
     this.controlsZoneEl = document.querySelector('.bj-zone-controls');
+    this.shoeEl = document.getElementById('bj-shoe');
+    this.discardEl = document.getElementById('bj-discard');
 
     // Cache button references
     this.chipBtns = document.querySelectorAll('.bj-chip-btn');
@@ -29,6 +31,7 @@ export class TableRenderer {
   /**
    * Render a hand of cards into a container element.
    * Clears existing content, creates card elements with fan overlap.
+   * Cards start with opacity 0 for AnimationManager to animate in.
    */
   renderHand(containerEl, cards) {
     containerEl.innerHTML = '';
@@ -36,9 +39,35 @@ export class TableRenderer {
       const el = createCardElement(card);
       el.style.position = 'absolute';
       el.style.left = `${i * 12}px`;
-      el.style.opacity = '1';
+      el.style.opacity = '0';
       containerEl.appendChild(el);
     });
+  }
+
+  /**
+   * Get all .bj-card elements in a container.
+   * @param {HTMLElement} containerEl
+   * @returns {HTMLElement[]}
+   */
+  getCardElements(containerEl) {
+    return Array.from(containerEl.querySelectorAll('.bj-card'));
+  }
+
+  /**
+   * Add a single card element to a hand container at the next fan position.
+   * Card starts with opacity 0 for animation.
+   * @param {HTMLElement} containerEl
+   * @param {{ suit: string, rank: string, faceDown: boolean }} card
+   * @returns {HTMLElement} The newly created card element
+   */
+  addCardToHand(containerEl, card) {
+    const existingCount = containerEl.querySelectorAll('.bj-card').length;
+    const el = createCardElement(card);
+    el.style.position = 'absolute';
+    el.style.left = `${existingCount * 12}px`;
+    el.style.opacity = '0';
+    containerEl.appendChild(el);
+    return el;
   }
 
   /**
