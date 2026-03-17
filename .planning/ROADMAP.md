@@ -12,7 +12,7 @@ This roadmap delivers a browser-based single-player blackjack game in five phase
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Game Engine** - Pure state machine with correct blackjack rules, betting, and core architecture
+- [x] **Phase 1: Game Engine** - Pure state machine with correct blackjack rules, betting, and core architecture (completed 2026-03-17)
 - [ ] **Phase 2: Visual Game** - Card animations, table UI, and browser-playable experience
 - [ ] **Phase 3: Full Casino Rules** - Split, insurance, dealer irrationality, and sound stub wiring
 - [ ] **Phase 4: Session Stats** - In-memory tracking of per-session statistics
@@ -106,7 +106,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Game Engine | 2/3 | In progress | - |
+| 1. Game Engine | 3/3 | Complete   | 2026-03-17 |
 | 2. Visual Game | 0/3 | Not started | - |
 | 3. Full Casino Rules | 0/3 | Not started | - |
 | 4. Session Stats | 0/2 | Not started | - |

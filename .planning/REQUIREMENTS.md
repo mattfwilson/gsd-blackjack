@@ -49,7 +49,7 @@
 
 ### Sound
 
-- [ ] **SND-01**: SoundManager module ships with no-op stubs for: card dealt, bet placed, chips won, round won, bust
+- [x] **SND-01**: SoundManager module ships with no-op stubs for: card dealt, bet placed, chips won, round won, bust
 - [ ] **SND-02**: Sound stubs are triggered at the correct AnimationManager lifecycle events (not game state changes)
 - [ ] **SND-03**: Activating a sound requires only: providing an audio file path and removing the no-op stub — no structural changes needed
 
@@ -142,7 +142,7 @@
 | ANIM-03 | Phase 2 | Pending |
 | ANIM-04 | Phase 2 | Pending |
 | ANIM-05 | Phase 2 | Pending |
-| SND-01 | Phase 1 | Pending |
+| SND-01 | Phase 1 | Complete |
 | SND-02 | Phase 3 | Pending |
 | SND-03 | Phase 3 | Pending |
 | STAT-01 | Phase 4 | Pending |
