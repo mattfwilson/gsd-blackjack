@@ -139,6 +139,7 @@ export class TableRenderer {
    * Render the current bet display.
    */
   renderBet(bet) {
+    console.log('[RENDER] renderBet:', bet, '→', formatChips(bet), 'betEl:', this.betEl);
     this.betEl.textContent = 'Bet: ' + formatChips(bet);
   }
 

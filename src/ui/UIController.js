@@ -39,6 +39,7 @@ export class UIController {
     // Chip buttons: accumulate pending bet
     this.#renderer.chipBtns.forEach(btn => {
       btn.addEventListener('click', () => {
+        console.log('[BET] chip clicked, amount:', btn.dataset.amount, 'animBusy:', this.#animManager.isBusy, 'pendingBet:', this.#pendingBet, 'chips:', this.#engine.getState().chips);
         if (this.#animManager.isBusy) return;
         const amount = parseInt(btn.dataset.amount, 10);
         const state = this.#engine.getState();
@@ -47,7 +48,10 @@ export class UIController {
           this.#pendingBet + amount <= 50000
         ) {
           this.#pendingBet += amount;
+          console.log('[BET] pendingBet updated to:', this.#pendingBet);
           this.#render();
+        } else {
+          console.log('[BET] condition failed:', this.#pendingBet + amount, 'vs chips:', state.chips, 'vs max:', 50000);
         }
       });
     });
@@ -351,4 +355,10 @@ export class UIController {
 }
 
 // Boot on page load
-const controller = new UIController();
+console.log('[BOOT] UIController module loading...');
+try {
+  const controller = new UIController();
+  console.log('[BOOT] UIController initialized OK, chipBtns count:', controller.pendingBet !== undefined ? document.querySelectorAll('.bj-chip-btn').length : 'unknown');
+} catch (err) {
+  console.error('[BOOT] UIController constructor threw:', err);
+}

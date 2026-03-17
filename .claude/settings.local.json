@@ -9,7 +9,9 @@
       "Skill(gsd:discuss-phase)",
       "Bash(node \"C:/Users/mattf/.claude/get-shit-done/bin/gsd-tools.cjs\" commit \"docs\\(01\\): capture phase context\" --files \".planning/phases/01-game-engine/01-CONTEXT.md\")",
       "Bash(node \"C:/Users/mattf/.claude/get-shit-done/bin/gsd-tools.cjs\" state record-session \\\\\n  --stopped-at \"Phase 1 context gathered\" \\\\\n  --resume-file \".planning/phases/01-game-engine/01-CONTEXT.md\" && \\\\\nnode \"C:/Users/mattf/.claude/get-shit-done/bin/gsd-tools.cjs\" commit \"docs\\(state\\): record phase 1 context session\" --files .planning/STATE.md)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(cd \"C:/Users/mattf/Desktop/Plans/Blackjack\" && node --input-type=module <<'EOF'\nimport './src/ui/UIController.js';\nconsole.log\\('UIController loaded OK'\\);\nEOF)",
+      "Bash(cd \"C:/Users/mattf/Desktop/Plans/Blackjack\" && node --check src/ui/AnimationManager.js && echo \"AnimationManager OK\" && node --check src/ui/UIController.js && echo \"UIController OK\" && node --check src/ui/TableRenderer.js && echo \"TableRenderer OK\" && node --check src/ui/CardRenderer.js && echo \"CardRenderer OK\")"
     ]
   }
 }
