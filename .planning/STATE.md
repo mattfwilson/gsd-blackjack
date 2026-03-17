@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: planning
-stopped_at: Phase 1 context gathered
-last_updated: "2026-03-17T00:42:15.883Z"
-last_activity: 2026-03-16 -- Roadmap created
+status: executing
+stopped_at: Completed 01-01-PLAN.md
+last_updated: "2026-03-17T01:05:43Z"
+last_activity: 2026-03-17 -- Plan 01-01 executed (Deck.js + Hand.js)
 progress:
   total_phases: 5
   completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
-  percent: 0
+  total_plans: 13
+  completed_plans: 1
+  percent: 8
 ---
 
 # Project State
@@ -26,28 +26,28 @@ See: .planning/PROJECT.md (updated 2026-03-16)
 ## Current Position
 
 Phase: 1 of 5 (Game Engine)
-Plan: 0 of 3 in current phase
-Status: Ready to plan
-Last activity: 2026-03-16 -- Roadmap created
+Plan: 1 of 3 in current phase
+Status: Executing
+Last activity: 2026-03-17 -- Plan 01-01 executed (Deck.js + Hand.js)
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [█░░░░░░░░░] 8%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 0
-- Average duration: -
-- Total execution time: 0 hours
+- Total plans completed: 1
+- Average duration: 3min
+- Total execution time: 0.05 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| - | - | - | - |
+| 01-game-engine | 1 | 3min | 3min |
 
 **Recent Trend:**
-- Last 5 plans: -
-- Trend: -
+- Last 5 plans: 01-01 (3min)
+- Trend: Starting
 
 *Updated after each plan completion*
 
@@ -61,6 +61,10 @@ Recent decisions affecting current work:
 - [Roadmap]: Phase 1 is headless engine (no DOM) to validate rules before UI investment
 - [Roadmap]: Array-of-hands data model established in Phase 1 even though split ships in Phase 3
 - [Roadmap]: Double down included in Phase 1 engine (pure logic, no split dependency)
+- [01-01]: Fisher-Yates Durstenfeld variant for unbiased shoe shuffle
+- [01-01]: 75% cut point (card 234 of 312) for reshuffle trigger
+- [01-01]: Hand bet field included from day one for Phase 3 split readiness
+- [01-01]: addCardToHand returns new object (immutable update pattern)
 
 ### Pending Todos
 
@@ -72,6 +76,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-17T00:42:15.880Z
-Stopped at: Phase 1 context gathered
-Resume file: .planning/phases/01-game-engine/01-CONTEXT.md
+Last session: 2026-03-17T01:05:43Z
+Stopped at: Completed 01-01-PLAN.md
+Resume file: .planning/phases/01-game-engine/01-02-PLAN.md

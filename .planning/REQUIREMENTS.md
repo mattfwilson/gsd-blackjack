@@ -7,13 +7,13 @@
 
 ### Core Game
 
-- [ ] **CORE-01**: Game uses a 6-deck shoe that reshuffles automatically when running low
-- [ ] **CORE-02**: Hand value is computed as a pure function from the card array; aces count as 11 until the hand would bust, then recount as 1
+- [x] **CORE-01**: Game uses a 6-deck shoe that reshuffles automatically when running low
+- [x] **CORE-02**: Hand value is computed as a pure function from the card array; aces count as 11 until the hand would bust, then recount as 1
 - [ ] **CORE-03**: Player blackjack (ace + 10-value on first two cards) pays 3:2 unless dealer also has blackjack (push)
 - [ ] **CORE-04**: Dealer blackjack beats all non-blackjack player hands
 - [ ] **CORE-05**: Tied hand values result in a push (player's bet returned)
 - [ ] **CORE-06**: Dealer stands on all 17s (hard and soft)
-- [ ] **CORE-07**: All chip math uses integer cents internally to avoid floating-point errors
+- [x] **CORE-07**: All chip math uses integer cents internally to avoid floating-point errors
 
 ### Betting
 
@@ -78,11 +78,11 @@
 ### Code Quality & Architecture
 
 - [ ] **CODE-01**: CSS classes use the `bj-` prefix throughout to avoid collision with user-supplied styles
-- [ ] **CODE-02**: JS identifiers do not shadow any reserved words or browser globals (`class`, `event`, `target`, `window`, `document`, `name`, `status`, etc.)
+- [x] **CODE-02**: JS identifiers do not shadow any reserved words or browser globals (`class`, `event`, `target`, `window`, `document`, `name`, `status`, etc.)
 - [ ] **CODE-03**: All visual assets are referenced by swappable path constants — dropping in new assets requires no structural changes
 - [ ] **CODE-04**: Game layout accommodates two simultaneous player hand areas (required for split)
-- [ ] **CODE-05**: Codebase uses ES Modules (`<script type="module">`) with no global scope pollution
-- [ ] **CODE-06**: GameEngine is a pure state machine with no DOM access — all rendering is handled by a separate UI layer
+- [x] **CODE-05**: Codebase uses ES Modules (`<script type="module">`) with no global scope pollution
+- [x] **CODE-06**: GameEngine is a pure state machine with no DOM access — all rendering is handled by a separate UI layer
 
 ## v2 Requirements
 
@@ -115,13 +115,13 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| CORE-01 | Phase 1 | Pending |
-| CORE-02 | Phase 1 | Pending |
+| CORE-01 | Phase 1 | Complete |
+| CORE-02 | Phase 1 | Complete |
 | CORE-03 | Phase 1 | Pending |
 | CORE-04 | Phase 1 | Pending |
 | CORE-05 | Phase 1 | Pending |
 | CORE-06 | Phase 1 | Pending |
-| CORE-07 | Phase 1 | Pending |
+| CORE-07 | Phase 1 | Complete |
 | BET-01 | Phase 1 | Pending |
 | BET-02 | Phase 1 | Pending |
 | BET-03 | Phase 1 | Pending |
@@ -159,11 +159,11 @@
 | PERS-03 | Phase 5 | Pending |
 | PERS-04 | Phase 5 | Pending |
 | CODE-01 | Phase 2 | Pending |
-| CODE-02 | Phase 1 | Pending |
+| CODE-02 | Phase 1 | Complete |
 | CODE-03 | Phase 2 | Pending |
 | CODE-04 | Phase 2 | Pending |
-| CODE-05 | Phase 1 | Pending |
-| CODE-06 | Phase 1 | Pending |
+| CODE-05 | Phase 1 | Complete |
+| CODE-06 | Phase 1 | Complete |
 
 **Coverage:**
 - v1 requirements: 49 total

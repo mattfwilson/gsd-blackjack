@@ -33,7 +33,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 3 plans
 
 Plans:
-- [ ] 01-01-PLAN.md — Test harness + Deck.js (6-deck shoe) + Hand.js (ace value computation)
+- [x] 01-01-PLAN.md — Test harness + Deck.js (6-deck shoe) + Hand.js (ace value computation)
 - [ ] 01-02-PLAN.md — GameEngine.js state machine (betting, dealing, hit/stand/double, dealer AI, payouts)
 - [ ] 01-03-PLAN.md — SoundManager no-op stubs + index.html entry point + integration tests
 
@@ -106,7 +106,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Game Engine | 0/3 | Not started | - |
+| 1. Game Engine | 1/3 | In progress | - |
 | 2. Visual Game | 0/3 | Not started | - |
 | 3. Full Casino Rules | 0/3 | Not started | - |
 | 4. Session Stats | 0/2 | Not started | - |
