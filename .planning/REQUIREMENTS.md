@@ -44,7 +44,7 @@
 - [ ] **ANIM-01**: Cards slide in from deck position sequentially with staggered timing when dealt
 - [ ] **ANIM-02**: Dealer's hole card flips with a CSS 3D rotateY animation when revealed
 - [ ] **ANIM-03**: Cards slide off to a discard pile at the end of each round
-- [ ] **ANIM-04**: All animation timings are defined in a single `ANIM` constants block in JS and synced to CSS custom properties (e.g. `--bj-deal-duration`)
+- [x] **ANIM-04**: All animation timings are defined in a single `ANIM` constants block in JS and synced to CSS custom properties (e.g. `--bj-deal-duration`)
 - [ ] **ANIM-05**: Player action buttons are disabled during animations to prevent race conditions
 
 ### Sound
@@ -77,9 +77,9 @@
 
 ### Code Quality & Architecture
 
-- [ ] **CODE-01**: CSS classes use the `bj-` prefix throughout to avoid collision with user-supplied styles
+- [x] **CODE-01**: CSS classes use the `bj-` prefix throughout to avoid collision with user-supplied styles
 - [x] **CODE-02**: JS identifiers do not shadow any reserved words or browser globals (`class`, `event`, `target`, `window`, `document`, `name`, `status`, etc.)
-- [ ] **CODE-03**: All visual assets are referenced by swappable path constants — dropping in new assets requires no structural changes
+- [x] **CODE-03**: All visual assets are referenced by swappable path constants — dropping in new assets requires no structural changes
 - [ ] **CODE-04**: Game layout accommodates two simultaneous player hand areas (required for split)
 - [x] **CODE-05**: Codebase uses ES Modules (`<script type="module">`) with no global scope pollution
 - [x] **CODE-06**: GameEngine is a pure state machine with no DOM access — all rendering is handled by a separate UI layer
@@ -140,7 +140,7 @@
 | ANIM-01 | Phase 2 | Pending |
 | ANIM-02 | Phase 2 | Pending |
 | ANIM-03 | Phase 2 | Pending |
-| ANIM-04 | Phase 2 | Pending |
+| ANIM-04 | Phase 2 | Complete |
 | ANIM-05 | Phase 2 | Pending |
 | SND-01 | Phase 1 | Complete |
 | SND-02 | Phase 3 | Pending |
@@ -158,9 +158,9 @@
 | PERS-02 | Phase 5 | Pending |
 | PERS-03 | Phase 5 | Pending |
 | PERS-04 | Phase 5 | Pending |
-| CODE-01 | Phase 2 | Pending |
+| CODE-01 | Phase 2 | Complete |
 | CODE-02 | Phase 1 | Complete |
-| CODE-03 | Phase 2 | Pending |
+| CODE-03 | Phase 2 | Complete |
 | CODE-04 | Phase 2 | Pending |
 | CODE-05 | Phase 1 | Complete |
 | CODE-06 | Phase 1 | Complete |
