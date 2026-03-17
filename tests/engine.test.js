@@ -1,4 +1,5 @@
 import { Deck } from '../src/engine/Deck.js';
+import { computeHandValue, createHand, addCardToHand } from '../src/engine/Hand.js';
 
 let passed = 0;
 let failed = 0;
@@ -158,6 +159,118 @@ console.log('\n--- Deck Tests ---\n');
 
   const sameOrder = firstOrder.every((val, idx) => val === secondOrder[idx]);
   assertTrue(!sameOrder, 'Two shuffles produce different card orders (first 10 cards)');
+}
+
+// ============================================================
+// Hand Tests
+// ============================================================
+
+console.log('\n--- Hand Tests ---\n');
+
+// Helper card constructors
+const ace = { suit: 'spades', rank: 'A', faceDown: false };
+const king = { suit: 'spades', rank: 'K', faceDown: false };
+const queen = { suit: 'hearts', rank: 'Q', faceDown: false };
+const six = { suit: 'diamonds', rank: '6', faceDown: false };
+const five = { suit: 'clubs', rank: '5', faceDown: false };
+const nine = { suit: 'hearts', rank: '9', faceDown: false };
+const eight = { suit: 'diamonds', rank: '8', faceDown: false };
+const ten = { suit: 'clubs', rank: '10', faceDown: false };
+
+// Test: A+K = 21, isBlackjack=true, isSoft=true
+assertDeepEqual(
+  computeHandValue([ace, king]),
+  { value: 21, isSoft: true, isBust: false, isBlackjack: true },
+  'A+K = 21, blackjack, soft'
+);
+
+// Test: A+A = 12 soft
+assertDeepEqual(
+  computeHandValue([ace, ace]),
+  { value: 12, isSoft: true, isBust: false, isBlackjack: false },
+  'A+A = 12 soft'
+);
+
+// Test: A+A+9 = 21 soft
+assertDeepEqual(
+  computeHandValue([ace, ace, nine]),
+  { value: 21, isSoft: true, isBust: false, isBlackjack: false },
+  'A+A+9 = 21 soft'
+);
+
+// Test: A+6 = 17 soft
+assertDeepEqual(
+  computeHandValue([ace, six]),
+  { value: 17, isSoft: true, isBust: false, isBlackjack: false },
+  'A+6 = 17 soft'
+);
+
+// Test: A+6+5 = 12 hard
+assertDeepEqual(
+  computeHandValue([ace, six, five]),
+  { value: 12, isSoft: false, isBust: false, isBlackjack: false },
+  'A+6+5 = 12 hard (ace demoted)'
+);
+
+// Test: A+A+A+8 = 21 soft
+assertDeepEqual(
+  computeHandValue([ace, ace, ace, eight]),
+  { value: 21, isSoft: true, isBust: false, isBlackjack: false },
+  'A+A+A+8 = 21 soft (two aces demoted)'
+);
+
+// Test: K+Q = 20, not soft, not blackjack
+assertDeepEqual(
+  computeHandValue([king, queen]),
+  { value: 20, isSoft: false, isBust: false, isBlackjack: false },
+  'K+Q = 20, not soft, not blackjack'
+);
+
+// Test: K+Q+5 = 25, bust
+assertDeepEqual(
+  computeHandValue([king, queen, five]),
+  { value: 25, isSoft: false, isBust: true, isBlackjack: false },
+  'K+Q+5 = 25, bust'
+);
+
+// Test: 5+6 = 11, not soft
+assertDeepEqual(
+  computeHandValue([five, six]),
+  { value: 11, isSoft: false, isBust: false, isBlackjack: false },
+  '5+6 = 11, not soft'
+);
+
+// Test: createHand() returns correct empty hand shape
+assertDeepEqual(
+  createHand(),
+  { cards: [], value: 0, isSoft: false, isBust: false, isBlackjack: false, bet: 0 },
+  'createHand() returns empty hand with correct shape and bet: 0'
+);
+
+// Test: createHand(5000) sets bet
+assertEqual(createHand(5000).bet, 5000, 'createHand(5000) sets bet to 5000');
+
+// Test: computeHandValue does NOT mutate input cards array
+{
+  const cards = [
+    { suit: 'spades', rank: 'A', faceDown: false },
+    { suit: 'hearts', rank: 'K', faceDown: false }
+  ];
+  const cardsBefore = JSON.stringify(cards);
+  computeHandValue(cards);
+  const cardsAfter = JSON.stringify(cards);
+  assertEqual(cardsBefore, cardsAfter, 'computeHandValue does not mutate input cards');
+}
+
+// Test: addCardToHand returns new hand with card added and computed values
+{
+  const hand = createHand(1000);
+  const hand2 = addCardToHand(hand, ace);
+  assertEqual(hand2.cards.length, 1, 'addCardToHand adds card to hand');
+  assertEqual(hand2.value, 11, 'addCardToHand computes value');
+  assertEqual(hand2.bet, 1000, 'addCardToHand preserves bet');
+  // Original hand not mutated
+  assertEqual(hand.cards.length, 0, 'addCardToHand does not mutate original hand');
 }
 
 // ============================================================
