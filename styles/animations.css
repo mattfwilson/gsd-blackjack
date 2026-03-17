@@ -1,0 +1,20 @@
+/* Animation timing custom properties — fallback defaults match ANIM constants in constants.js */
+:root {
+  --bj-deal-duration: 150ms;
+  --bj-deal-stagger: 100ms;
+  --bj-flip-duration: 300ms;
+  --bj-discard-duration: 200ms;
+  --bj-discard-stagger: 80ms;
+  --bj-result-display: 2000ms;
+  --bj-result-fade: 300ms;
+}
+
+/* Transition utility: card dealing slide-in */
+.bj-card-dealing {
+  transition: transform var(--bj-deal-duration) ease-out, opacity var(--bj-deal-duration) ease-out;
+}
+
+/* Transition utility: card discarding slide-out */
+.bj-card-discarding {
+  transition: transform var(--bj-discard-duration) ease-in, opacity var(--bj-discard-duration) ease-in;
+}

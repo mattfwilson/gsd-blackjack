@@ -1,0 +1,107 @@
+/* Table surface and zone layout */
+
+.bj-table {
+  width: 100vw;
+  height: 100vh;
+  background: #0a0e1a;
+  display: flex;
+  flex-direction: column;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: #e8e8e8;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.bj-zone-dealer {
+  flex: 1;
+  min-height: 160px;
+  padding: 24px;
+  position: relative;
+}
+
+.bj-zone-player {
+  flex: 1.5;
+  min-height: 200px;
+  padding: 24px;
+  position: relative;
+  display: flex;
+  gap: 32px;
+}
+
+.bj-status-bar {
+  padding: 8px 24px;
+  background: #1a2236;
+  display: flex;
+  justify-content: space-between;
+  font-size: 16px;
+}
+
+.bj-zone-controls {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
+.bj-shoe-area {
+  position: absolute;
+  right: 16px;
+  top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.bj-shoe,
+.bj-discard {
+  width: 80px;
+  height: 112px;
+  background: #2c3e50;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+  position: relative;
+}
+
+.bj-shoe::before,
+.bj-shoe::after,
+.bj-discard::before,
+.bj-discard::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: #2c3e50;
+  border-radius: 6px;
+}
+
+.bj-shoe::before,
+.bj-discard::before {
+  transform: translate(2px, -2px);
+  z-index: -1;
+}
+
+.bj-shoe::after,
+.bj-discard::after {
+  transform: translate(4px, -4px);
+  z-index: -2;
+}
+
+.bj-hand-area {
+  flex: 1;
+  min-height: 120px;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+}
+
+.bj-score {
+  background: #1a2236;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 16px;
+  color: #e8e8e8;
+  margin-left: 8px;
+  align-self: center;
+}

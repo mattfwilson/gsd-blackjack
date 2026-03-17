@@ -1,0 +1,163 @@
+/* Button and control bar styling */
+
+.bj-chip-row {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.bj-action-row {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.bj-chip-btn {
+  min-width: 64px;
+  height: 44px;
+  border-radius: 8px;
+  background: #2a3a5c;
+  color: #e8e8e8;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.bj-chip-btn:hover {
+  background: #3a4f7a;
+}
+
+.bj-chip-btn:active {
+  background: #1e2d4a;
+}
+
+.bj-chip-btn:disabled {
+  background: #1a2236;
+  color: #8899aa;
+  cursor: not-allowed;
+}
+
+.bj-btn-hit,
+.bj-btn-stand,
+.bj-btn-double {
+  min-width: 80px;
+  height: 44px;
+  border-radius: 8px;
+  background: #2a3a5c;
+  color: #e8e8e8;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.bj-btn-hit:hover,
+.bj-btn-stand:hover,
+.bj-btn-double:hover {
+  background: #3a4f7a;
+}
+
+.bj-btn-hit:active,
+.bj-btn-stand:active,
+.bj-btn-double:active {
+  background: #1e2d4a;
+}
+
+.bj-btn-hit:disabled,
+.bj-btn-stand:disabled,
+.bj-btn-double:disabled {
+  background: #1a2236;
+  color: #8899aa;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.bj-btn-deal {
+  min-width: 100px;
+  height: 44px;
+  border-radius: 8px;
+  background: #e6b800;
+  color: #0a0e1a;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.bj-btn-deal:hover {
+  background: #ffd000;
+}
+
+.bj-btn-deal:active {
+  background: #c49e00;
+}
+
+.bj-btn-deal:disabled {
+  background: #1a2236;
+  color: #8899aa;
+}
+
+.bj-btn-clear {
+  min-width: 80px;
+  height: 44px;
+  border-radius: 8px;
+  background: #2a3a5c;
+  color: #e8e8e8;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.bj-btn-clear:hover {
+  background: #3a4f7a;
+}
+
+.bj-btn-clear:active {
+  background: #1e2d4a;
+}
+
+.bj-btn-clear:disabled {
+  background: #1a2236;
+  color: #8899aa;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Result banner overlay */
+.bj-result-banner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(10, 14, 26, 0.9);
+  border-radius: 12px;
+  padding: 16px 32px;
+  font-size: 24px;
+  font-weight: 600;
+  z-index: 10;
+  opacity: 1;
+  transition: opacity var(--bj-result-fade) ease-out;
+}
+
+.bj-result-banner--win {
+  color: #27ae60;
+}
+
+.bj-result-banner--loss {
+  color: #c0392b;
+}
+
+.bj-result-banner--push {
+  color: #8899aa;
+}
+
+.bj-result-banner--blackjack {
+  color: #e6b800;
+}
+
+.bj-result-banner--hidden {
+  opacity: 0;
+  pointer-events: none;
+}
