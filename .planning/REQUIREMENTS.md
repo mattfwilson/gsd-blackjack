@@ -115,23 +115,61 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| CORE-01–07 | Phase 1 | Pending |
-| BET-01–05 | Phase 1 | Pending |
-| ACTN-01–03 | Phase 1 | Pending |
-| DEAL-01–03 | Phase 2 | Pending |
-| ANIM-01–05 | Phase 2 | Pending |
-| SND-01–03 | Phase 1 | Pending |
-| ACTN-04–07 | Phase 2 | Pending |
-| STAT-01–06 | Phase 3 | Pending |
-| STAT-07–09 | Phase 3 | Pending |
-| PERS-01–04 | Phase 3 | Pending |
-| CODE-01–06 | Phase 1 | Pending |
+| CORE-01 | Phase 1 | Pending |
+| CORE-02 | Phase 1 | Pending |
+| CORE-03 | Phase 1 | Pending |
+| CORE-04 | Phase 1 | Pending |
+| CORE-05 | Phase 1 | Pending |
+| CORE-06 | Phase 1 | Pending |
+| CORE-07 | Phase 1 | Pending |
+| BET-01 | Phase 1 | Pending |
+| BET-02 | Phase 1 | Pending |
+| BET-03 | Phase 1 | Pending |
+| BET-04 | Phase 1 | Pending |
+| BET-05 | Phase 1 | Pending |
+| ACTN-01 | Phase 1 | Pending |
+| ACTN-02 | Phase 1 | Pending |
+| ACTN-03 | Phase 1 | Pending |
+| ACTN-04 | Phase 3 | Pending |
+| ACTN-05 | Phase 3 | Pending |
+| ACTN-06 | Phase 3 | Pending |
+| ACTN-07 | Phase 3 | Pending |
+| DEAL-01 | Phase 1 | Pending |
+| DEAL-02 | Phase 3 | Pending |
+| DEAL-03 | Phase 3 | Pending |
+| ANIM-01 | Phase 2 | Pending |
+| ANIM-02 | Phase 2 | Pending |
+| ANIM-03 | Phase 2 | Pending |
+| ANIM-04 | Phase 2 | Pending |
+| ANIM-05 | Phase 2 | Pending |
+| SND-01 | Phase 1 | Pending |
+| SND-02 | Phase 3 | Pending |
+| SND-03 | Phase 3 | Pending |
+| STAT-01 | Phase 4 | Pending |
+| STAT-02 | Phase 4 | Pending |
+| STAT-03 | Phase 4 | Pending |
+| STAT-04 | Phase 4 | Pending |
+| STAT-05 | Phase 4 | Pending |
+| STAT-06 | Phase 4 | Pending |
+| STAT-07 | Phase 5 | Pending |
+| STAT-08 | Phase 5 | Pending |
+| STAT-09 | Phase 5 | Pending |
+| PERS-01 | Phase 5 | Pending |
+| PERS-02 | Phase 5 | Pending |
+| PERS-03 | Phase 5 | Pending |
+| PERS-04 | Phase 5 | Pending |
+| CODE-01 | Phase 2 | Pending |
+| CODE-02 | Phase 1 | Pending |
+| CODE-03 | Phase 2 | Pending |
+| CODE-04 | Phase 2 | Pending |
+| CODE-05 | Phase 1 | Pending |
+| CODE-06 | Phase 1 | Pending |
 
 **Coverage:**
-- v1 requirements: 36 total
-- Mapped to phases: 36
-- Unmapped: 0 ✓
+- v1 requirements: 49 total
+- Mapped to phases: 49
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-16*
-*Last updated: 2026-03-16 after initial definition*
+*Last updated: 2026-03-16 after roadmap creation*
