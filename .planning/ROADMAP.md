@@ -35,7 +35,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 Plans:
 - [x] 01-01-PLAN.md — Test harness + Deck.js (6-deck shoe) + Hand.js (ace value computation)
 - [x] 01-02-PLAN.md — GameEngine.js state machine (betting, dealing, hit/stand/double, dealer AI, payouts)
-- [ ] 01-03-PLAN.md — SoundManager no-op stubs + index.html entry point + integration tests
+- [x] 01-03-PLAN.md — SoundManager no-op stubs + index.html entry point + integration tests
 
 ### Phase 2: Visual Game
 **Goal**: The player can open index.html in a browser, see a blackjack table, place bets, play hands with animated card dealing and flipping, and experience a complete round loop
@@ -47,12 +47,12 @@ Plans:
   3. All player action buttons are disabled during deal and dealer-turn animations -- clicking them has no effect
   4. The table layout displays two player hand areas (ready for split in Phase 3), chip count, bet controls, and all card zones using bj- prefixed CSS classes
   5. All animation timings are adjustable from a single ANIM constants block that syncs to CSS custom properties
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 02-01: TBD
-- [ ] 02-02: TBD
-- [ ] 02-03: TBD
+- [ ] 02-01-PLAN.md — ANIM/ASSET constants + CSS stylesheets (table, cards, controls, animations) + CardRenderer
+- [ ] 02-02-PLAN.md — Table layout HTML + TableRenderer + UIController (functional game without animations)
+- [ ] 02-03-PLAN.md — AnimationManager + animation wiring into game flow + visual verification checkpoint
 
 ### Phase 3: Full Casino Rules
 **Goal**: The player has access to the complete blackjack action set -- splitting pairs, taking insurance, and facing a dealer that occasionally deviates from standard logic
