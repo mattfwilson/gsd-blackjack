@@ -30,12 +30,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Player can hit, stand, and double down through the GameEngine API, and each action produces the correct state transition
   4. Dealer follows hit-on-16-or-less / stand-on-17-or-more logic and the round resolves with correct win/loss/push/blackjack outcomes and payouts in integer cents
   5. All modules use ES Modules with no global scope pollution, GameEngine has zero DOM imports, and SoundManager exists as a no-op stub module
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 01-01: TBD
-- [ ] 01-02: TBD
-- [ ] 01-03: TBD
+- [ ] 01-01-PLAN.md — Test harness + Deck.js (6-deck shoe) + Hand.js (ace value computation)
+- [ ] 01-02-PLAN.md — GameEngine.js state machine (betting, dealing, hit/stand/double, dealer AI, payouts)
+- [ ] 01-03-PLAN.md — SoundManager no-op stubs + index.html entry point + integration tests
 
 ### Phase 2: Visual Game
 **Goal**: The player can open index.html in a browser, see a blackjack table, place bets, play hands with animated card dealing and flipping, and experience a complete round loop
