@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd \"C:/Users/mattf/Desktop/plans/Blackjack\" && node \"C:/Users/mattf/.claude/get-shit-done/bin/gsd-tools.cjs\" commit \"docs: initialize project\" --files .planning/PROJECT.md)",
+      "Bash(cd \"C:/Users/mattf/Desktop/plans/Blackjack\" && node \"C:/Users/mattf/.claude/get-shit-done/bin/gsd-tools.cjs\" commit \"chore: add project config\" --files .planning/config.json)",
+      "Bash(node \"C:/Users/mattf/.claude/get-shit-done/bin/gsd-tools.cjs\" commit \"docs: complete project research\" --files .planning/research/)",
+      "Bash(cd \"C:/Users/mattf/Desktop/plans/Blackjack\" && node \"C:/Users/mattf/.claude/get-shit-done/bin/gsd-tools.cjs\" commit \"docs: define v1 requirements\" --files .planning/REQUIREMENTS.md)",
+      "Bash(cd \"C:/Users/mattf/Desktop/plans/Blackjack\" && node \"C:/Users/mattf/.claude/get-shit-done/bin/gsd-tools.cjs\" commit \"docs: create roadmap \\(5 phases\\)\" --files .planning/ROADMAP.md .planning/STATE.md .planning/REQUIREMENTS.md)",
+      "Skill(gsd:discuss-phase)",
+      "Bash(node \"C:/Users/mattf/.claude/get-shit-done/bin/gsd-tools.cjs\" commit \"docs\\(01\\): capture phase context\" --files \".planning/phases/01-game-engine/01-CONTEXT.md\")",
+      "Bash(node \"C:/Users/mattf/.claude/get-shit-done/bin/gsd-tools.cjs\" state record-session \\\\\n  --stopped-at \"Phase 1 context gathered\" \\\\\n  --resume-file \".planning/phases/01-game-engine/01-CONTEXT.md\" && \\\\\nnode \"C:/Users/mattf/.claude/get-shit-done/bin/gsd-tools.cjs\" commit \"docs\\(state\\): record phase 1 context session\" --files .planning/STATE.md)",
+      "WebSearch"
+    ]
+  }
+}
