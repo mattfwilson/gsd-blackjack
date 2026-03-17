@@ -9,25 +9,25 @@
 
 - [x] **CORE-01**: Game uses a 6-deck shoe that reshuffles automatically when running low
 - [x] **CORE-02**: Hand value is computed as a pure function from the card array; aces count as 11 until the hand would bust, then recount as 1
-- [ ] **CORE-03**: Player blackjack (ace + 10-value on first two cards) pays 3:2 unless dealer also has blackjack (push)
-- [ ] **CORE-04**: Dealer blackjack beats all non-blackjack player hands
-- [ ] **CORE-05**: Tied hand values result in a push (player's bet returned)
-- [ ] **CORE-06**: Dealer stands on all 17s (hard and soft)
+- [x] **CORE-03**: Player blackjack (ace + 10-value on first two cards) pays 3:2 unless dealer also has blackjack (push)
+- [x] **CORE-04**: Dealer blackjack beats all non-blackjack player hands
+- [x] **CORE-05**: Tied hand values result in a push (player's bet returned)
+- [x] **CORE-06**: Dealer stands on all 17s (hard and soft)
 - [x] **CORE-07**: All chip math uses integer cents internally to avoid floating-point errors
 
 ### Betting
 
-- [ ] **BET-01**: Player starts each session with $1,000 in chips
-- [ ] **BET-02**: Player places a bet before each hand is dealt
-- [ ] **BET-03**: Minimum bet is $10; maximum bet is $500
-- [ ] **BET-04**: Session ends when player's chip count reaches $0
-- [ ] **BET-05**: Player can start a new session at any time, resetting chips to $1,000
+- [x] **BET-01**: Player starts each session with $1,000 in chips
+- [x] **BET-02**: Player places a bet before each hand is dealt
+- [x] **BET-03**: Minimum bet is $10; maximum bet is $500
+- [x] **BET-04**: Session ends when player's chip count reaches $0
+- [x] **BET-05**: Player can start a new session at any time, resetting chips to $1,000
 
 ### Player Actions
 
-- [ ] **ACTN-01**: Player can hit (take another card) on any non-bust hand
-- [ ] **ACTN-02**: Player can stand (end their turn) on any hand
-- [ ] **ACTN-03**: Player can double down on their first two cards — doubles bet, takes exactly one more card
+- [x] **ACTN-01**: Player can hit (take another card) on any non-bust hand
+- [x] **ACTN-02**: Player can stand (end their turn) on any hand
+- [x] **ACTN-03**: Player can double down on their first two cards — doubles bet, takes exactly one more card
 - [ ] **ACTN-04**: Player can split a pair (two cards of equal value) into two separate hands played sequentially
 - [ ] **ACTN-05**: Split is allowed once per hand only — no re-splitting
 - [ ] **ACTN-06**: Player cannot double down after splitting
@@ -35,7 +35,7 @@
 
 ### Dealer AI
 
-- [ ] **DEAL-01**: Dealer follows standard hit ≤16 / stand ≥17 logic as the baseline
+- [x] **DEAL-01**: Dealer follows standard hit ≤16 / stand ≥17 logic as the baseline
 - [ ] **DEAL-02**: Dealer deviates from standard logic at a low configurable probability (~5–8%) to add unpredictability
 - [ ] **DEAL-03**: Each dealer deviation is logged internally for use in stats tracking
 
@@ -117,24 +117,24 @@
 |-------------|-------|--------|
 | CORE-01 | Phase 1 | Complete |
 | CORE-02 | Phase 1 | Complete |
-| CORE-03 | Phase 1 | Pending |
-| CORE-04 | Phase 1 | Pending |
-| CORE-05 | Phase 1 | Pending |
-| CORE-06 | Phase 1 | Pending |
+| CORE-03 | Phase 1 | Complete |
+| CORE-04 | Phase 1 | Complete |
+| CORE-05 | Phase 1 | Complete |
+| CORE-06 | Phase 1 | Complete |
 | CORE-07 | Phase 1 | Complete |
-| BET-01 | Phase 1 | Pending |
-| BET-02 | Phase 1 | Pending |
-| BET-03 | Phase 1 | Pending |
-| BET-04 | Phase 1 | Pending |
-| BET-05 | Phase 1 | Pending |
-| ACTN-01 | Phase 1 | Pending |
-| ACTN-02 | Phase 1 | Pending |
-| ACTN-03 | Phase 1 | Pending |
+| BET-01 | Phase 1 | Complete |
+| BET-02 | Phase 1 | Complete |
+| BET-03 | Phase 1 | Complete |
+| BET-04 | Phase 1 | Complete |
+| BET-05 | Phase 1 | Complete |
+| ACTN-01 | Phase 1 | Complete |
+| ACTN-02 | Phase 1 | Complete |
+| ACTN-03 | Phase 1 | Complete |
 | ACTN-04 | Phase 3 | Pending |
 | ACTN-05 | Phase 3 | Pending |
 | ACTN-06 | Phase 3 | Pending |
 | ACTN-07 | Phase 3 | Pending |
-| DEAL-01 | Phase 1 | Pending |
+| DEAL-01 | Phase 1 | Complete |
 | DEAL-02 | Phase 3 | Pending |
 | DEAL-03 | Phase 3 | Pending |
 | ANIM-01 | Phase 2 | Pending |
