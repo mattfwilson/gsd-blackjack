@@ -4,19 +4,55 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Blackjack</title>
+  <link rel="stylesheet" href="styles/table.css">
+  <link rel="stylesheet" href="styles/cards.css">
+  <link rel="stylesheet" href="styles/controls.css">
+  <link rel="stylesheet" href="styles/animations.css">
 </head>
 <body>
-  <h1>Blackjack</h1>
-  <p>Game engine loaded. UI coming in Phase 2.</p>
-  <script type="module">
-    import { GameEngine } from './src/engine/GameEngine.js';
-    import { SoundManager } from './src/SoundManager.js';
+  <div class="bj-table">
+    <!-- Dealer Zone -->
+    <div class="bj-zone-dealer">
+      <div class="bj-hand-area" id="bj-dealer-hand"></div>
+      <div class="bj-score" id="bj-dealer-score"></div>
+      <div class="bj-shoe-area">
+        <div class="bj-shoe" id="bj-shoe"></div>
+        <div class="bj-discard" id="bj-discard"></div>
+      </div>
+    </div>
 
-    // Verify modules load correctly
-    const engine = new GameEngine();
-    const sound = new SoundManager();
-    console.log('GameEngine initialized:', engine.placeBet ? 'OK' : 'FAIL');
-    console.log('SoundManager initialized:', sound.cardDealt ? 'OK' : 'FAIL');
-  </script>
+    <!-- Player Zone -->
+    <div class="bj-zone-player">
+      <div class="bj-hand-area" id="bj-hand-0"></div>
+      <div class="bj-hand-area" id="bj-hand-1"></div>
+      <div class="bj-result-banner bj-result-banner--hidden" id="bj-result-banner"></div>
+    </div>
+
+    <!-- Status Bar -->
+    <div class="bj-status-bar">
+      <span id="bj-chips">Chips: $1,000</span>
+      <span id="bj-bet">Bet: $0</span>
+    </div>
+
+    <!-- Controls Zone -->
+    <div class="bj-zone-controls">
+      <div class="bj-chip-row">
+        <button class="bj-chip-btn" data-amount="1000">+$10</button>
+        <button class="bj-chip-btn" data-amount="2500">+$25</button>
+        <button class="bj-chip-btn" data-amount="5000">+$50</button>
+        <button class="bj-chip-btn" data-amount="10000">+$100</button>
+        <button class="bj-chip-btn" data-amount="50000">+$500</button>
+        <button class="bj-btn-clear">Clear</button>
+      </div>
+      <div class="bj-action-row">
+        <button class="bj-btn-hit" disabled>Hit</button>
+        <button class="bj-btn-stand" disabled>Stand</button>
+        <button class="bj-btn-double" disabled>Double</button>
+        <button class="bj-btn-deal" disabled>Deal</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="src/ui/UIController.js"></script>
 </body>
 </html>
