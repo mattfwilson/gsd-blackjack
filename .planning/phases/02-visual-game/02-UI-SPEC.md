@@ -39,9 +39,18 @@ Declared values (multiples of 4):
 | 2xl | 48px | Vertical separation between dealer zone and player zone |
 | 3xl | 64px | Page-level top/bottom padding |
 
-Exceptions:
-- Card gap within a hand: 12px horizontal overlap offset (cards fan with partial overlap, not full 8px separation)
-- Touch target minimum: 44px height for all interactive buttons (chip buttons, action buttons, deal button)
+Exceptions: none
+
+---
+
+## Component Dimension Constraints
+
+Values outside the standard spacing scale, used for component-specific layout and accessibility requirements:
+
+| Value | Usage | Rationale |
+|-------|-------|-----------|
+| 12px | Card hand horizontal overlap offset (cards fan with partial overlap) | Visual fidelity — standard 8px gap is too wide for a realistic card fan, 16px is too far apart |
+| 44px | Minimum touch target height for all interactive buttons (chip buttons, action buttons, deal button) | WCAG 2.5.5 Target Size compliance — ensures accessible tap targets on touch devices |
 
 ---
 
@@ -52,10 +61,10 @@ Exceptions:
 | Body | 16px | 400 (regular) | 1.5 | Chip count ("Chips: $850"), bet display ("Bet: $50"), score labels |
 | Label | 14px | 600 (semibold) | 1.4 | Button labels (Hit, Stand, Double, Deal, Clear), chip denomination labels (+$10) |
 | Heading | 24px | 600 (semibold) | 1.2 | Result banner text ("You win +$150!", "Bust!", "Push") |
-| Card rank | 14px | 700 (bold) | 1.0 | Card corner rank + suit text (top-left, bottom-right) |
+| Card rank | 14px | 600 (semibold) | 1.0 | Card corner rank + suit text (top-left, bottom-right) |
 | Card suit (center) | 36px | 400 (regular) | 1.0 | Large centered suit symbol on card face |
 
-Font weights used: 400 (regular), 600 (semibold), 700 (bold — cards only).
+Font weights used: 400 (regular), 600 (semibold).
 
 ---
 
@@ -231,6 +240,8 @@ Vertical layout, top to bottom:
 | Shoe/discard | `bj-shoe-area` | absolute, right edge | 16px from right |
 
 Two player hand areas (`bj-hand-0`, `bj-hand-1`) sit side by side within the player zone. Phase 2 uses `bj-hand-0` only; `bj-hand-1` is present but empty (ready for Phase 3 split).
+
+Primary visual anchor: Deal button (accent fill) in BETTING phase; result banner (centered overlay) in ROUND_OVER phase.
 
 ---
 
