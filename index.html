@@ -11,20 +11,30 @@
 </head>
 <body>
   <div class="bj-table">
-    <!-- Dealer Zone -->
-    <div class="bj-zone-dealer">
-      <div class="bj-hand-area" id="bj-dealer-hand"></div>
-      <div class="bj-score" id="bj-dealer-score"></div>
-      <div class="bj-shoe-area">
-        <div class="bj-shoe" id="bj-shoe"></div>
-        <div class="bj-discard" id="bj-discard"></div>
+    <!-- Play Area (dealer + player, banner centered across both) -->
+    <div class="bj-play-area">
+      <!-- Dealer Zone -->
+      <div class="bj-zone-dealer">
+        <div class="bj-hand-group">
+          <div class="bj-score" id="bj-dealer-score"></div>
+          <div class="bj-hand-area" id="bj-dealer-hand"></div>
+        </div>
+        <div class="bj-shoe-area">
+          <div class="bj-shoe" id="bj-shoe"><span class="bj-pile-label">Draw Pile</span></div>
+          <div class="bj-discard" id="bj-discard"><span class="bj-pile-label">Discard Pile</span></div>
+        </div>
       </div>
-    </div>
 
-    <!-- Player Zone -->
-    <div class="bj-zone-player">
-      <div class="bj-hand-area" id="bj-hand-0"></div>
-      <div class="bj-hand-area" id="bj-hand-1"></div>
+      <!-- Player Zone -->
+      <div class="bj-zone-player">
+        <div class="bj-hand-group">
+          <div class="bj-hand-area" id="bj-hand-0"></div>
+        </div>
+        <div class="bj-hand-group">
+          <div class="bj-hand-area" id="bj-hand-1"></div>
+        </div>
+      </div>
+
       <div class="bj-result-banner bj-result-banner--hidden" id="bj-result-banner"></div>
     </div>
 

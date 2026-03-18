@@ -38,10 +38,12 @@ export class TableRenderer {
     cards.forEach((card, i) => {
       const el = createCardElement(card);
       el.style.position = 'absolute';
-      el.style.left = `${i * 12}px`;
+      el.style.left = `${i * 24}px`;
       el.style.opacity = '0';
       containerEl.appendChild(el);
     });
+    const fanWidth = cards.length > 0 ? (cards.length - 1) * 24 + 160 : 160;
+    containerEl.style.width = `${fanWidth}px`;
   }
 
   /**
@@ -64,9 +66,11 @@ export class TableRenderer {
     const existingCount = containerEl.querySelectorAll('.bj-card').length;
     const el = createCardElement(card);
     el.style.position = 'absolute';
-    el.style.left = `${existingCount * 12}px`;
+    el.style.left = `${existingCount * 24}px`;
     el.style.opacity = '0';
     containerEl.appendChild(el);
+    const fanWidth = existingCount * 24 + 160;
+    containerEl.style.width = `${fanWidth}px`;
     return el;
   }
 
@@ -123,9 +127,23 @@ export class TableRenderer {
       scoreEl = document.createElement('div');
       scoreEl.className = 'bj-score bj-player-score';
       scoreEl.dataset.for = containerEl.id;
-      containerEl.parentElement.insertBefore(scoreEl, containerEl.nextSibling);
+      containerEl.parentElement.insertBefore(scoreEl, containerEl);
     }
     scoreEl.textContent = String(hand.value);
+  }
+
+  showScores() {
+    this.dealerScoreEl.style.visibility = 'visible';
+    document.querySelectorAll('.bj-player-score').forEach(el => {
+      el.style.visibility = 'visible';
+    });
+  }
+
+  hideScores() {
+    this.dealerScoreEl.style.visibility = 'hidden';
+    document.querySelectorAll('.bj-player-score').forEach(el => {
+      el.style.visibility = 'hidden';
+    });
   }
 
   /**
@@ -139,7 +157,6 @@ export class TableRenderer {
    * Render the current bet display.
    */
   renderBet(bet) {
-    console.log('[RENDER] renderBet:', bet, '→', formatChips(bet), 'betEl:', this.betEl);
     this.betEl.textContent = 'Bet: ' + formatChips(bet);
   }
 

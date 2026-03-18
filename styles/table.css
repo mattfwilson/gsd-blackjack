@@ -1,5 +1,15 @@
 /* Table surface and zone layout */
 
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
 .bj-table {
   width: 100vw;
   height: 100vh;
@@ -14,20 +24,39 @@
   box-sizing: border-box;
 }
 
+.bj-play-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
 .bj-zone-dealer {
   flex: 1;
-  min-height: 160px;
+  min-height: 280px;
   padding: 24px;
   position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
 }
 
 .bj-zone-player {
   flex: 1.5;
-  min-height: 200px;
+  min-height: 280px;
   padding: 24px;
   position: relative;
   display: flex;
-  gap: 32px;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 48px;
+}
+
+.bj-hand-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
 }
 
 .bj-status-bar {
@@ -35,7 +64,7 @@
   background: #1a2236;
   display: flex;
   justify-content: space-between;
-  font-size: 16px;
+  font-size: 48px;
 }
 
 .bj-zone-controls {
@@ -57,8 +86,8 @@
 
 .bj-shoe,
 .bj-discard {
-  width: 80px;
-  height: 112px;
+  width: 160px;
+  height: 224px;
   background: #2c3e50;
   border-radius: 6px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
@@ -88,20 +117,31 @@
   z-index: -2;
 }
 
+.bj-pile-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  font-size: 12px;
+  color: #8899aa;
+  text-align: center;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
 .bj-hand-area {
-  flex: 1;
-  min-height: 120px;
+  min-height: 240px;
   position: relative;
-  display: flex;
-  align-items: flex-end;
 }
 
 .bj-score {
   background: #1a2236;
   border-radius: 4px;
-  padding: 4px 8px;
-  font-size: 16px;
+  padding: 4px 12px;
+  font-size: 20px;
+  font-weight: 600;
   color: #e8e8e8;
-  margin-left: 8px;
-  align-self: center;
+  text-align: center;
+  visibility: hidden;
 }

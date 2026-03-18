@@ -39,7 +39,6 @@ export class UIController {
     // Chip buttons: accumulate pending bet
     this.#renderer.chipBtns.forEach(btn => {
       btn.addEventListener('click', () => {
-        console.log('[BET] chip clicked, amount:', btn.dataset.amount, 'animBusy:', this.#animManager.isBusy, 'pendingBet:', this.#pendingBet, 'chips:', this.#engine.getState().chips);
         if (this.#animManager.isBusy) return;
         const amount = parseInt(btn.dataset.amount, 10);
         const state = this.#engine.getState();
@@ -48,10 +47,7 @@ export class UIController {
           this.#pendingBet + amount <= 50000
         ) {
           this.#pendingBet += amount;
-          console.log('[BET] pendingBet updated to:', this.#pendingBet);
           this.#render();
-        } else {
-          console.log('[BET] condition failed:', this.#pendingBet + amount, 'vs chips:', state.chips, 'vs max:', 50000);
         }
       });
     });
@@ -94,6 +90,7 @@ export class UIController {
       if (e.target.classList.contains('bj-btn-new-session')) {
         this.#engine.resetSession();
         this.#pendingBet = 0;
+        this.#renderer.clearTable();
         this.#render();
       }
     });
@@ -103,6 +100,7 @@ export class UIController {
     const betAmount = this.#pendingBet;
     this.#pendingBet = 0;
     this.#engine.placeBet(betAmount);
+    const chipsAfterBet = this.#engine.getState().chips;
     this.#engine.deal();
 
     const state = this.#engine.getState();
@@ -112,7 +110,7 @@ export class UIController {
     this.#renderer.renderPlayerScore(state.playerHands[0], this.#renderer.playerHand0El);
     this.#renderer.renderHand(this.#renderer.dealerHandEl, state.dealerHand.cards);
     this.#renderer.renderDealerScore(state.dealerHand);
-    this.#renderer.renderChips(state.chips);
+    this.#renderer.renderChips(chipsAfterBet);
     this.#renderer.renderBet(state.currentBet);
 
     // Disable all buttons during deal animation
@@ -130,6 +128,7 @@ export class UIController {
       // Blackjack scenario -- round resolved immediately
       await this.#handleRoundOver();
     } else {
+      this.#renderer.showScores();
       this.#renderControls();
     }
   }
@@ -207,7 +206,6 @@ export class UIController {
 
     // Update bet display (doubled)
     this.#renderer.renderBet(state.currentBet);
-    this.#renderer.renderChips(state.chips);
 
     // Add the new player card (invisible) and animate in
     const newCard = state.playerHands[0].cards[state.playerHands[0].cards.length - 1];
@@ -293,6 +291,8 @@ export class UIController {
       await this.#animManager.discardAll(allCards, this.#renderer.discardEl);
     }
 
+    this.#renderer.hideScores();
+
     // Clear the table
     this.#renderer.clearTable();
 
@@ -355,10 +355,4 @@ export class UIController {
 }
 
 // Boot on page load
-console.log('[BOOT] UIController module loading...');
-try {
-  const controller = new UIController();
-  console.log('[BOOT] UIController initialized OK, chipBtns count:', controller.pendingBet !== undefined ? document.querySelectorAll('.bj-chip-btn').length : 'unknown');
-} catch (err) {
-  console.error('[BOOT] UIController constructor threw:', err);
-}
+const controller = new UIController();
