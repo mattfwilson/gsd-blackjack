@@ -85,13 +85,27 @@ export class UIController {
       this.#handleDouble();
     });
 
-    // Delegated click handler for bankrupt "New Session" button
+    // Split button
+    if (this.#renderer.splitBtn) {
+      this.#renderer.splitBtn.addEventListener('click', () => {
+        if (this.#animManager.isBusy) return;
+        this.#handleSplit();
+      });
+    }
+
+    // Delegated click handler for dynamic buttons (bankrupt, insurance)
     this.#renderer.controlsZoneEl.addEventListener('click', (e) => {
       if (e.target.classList.contains('bj-btn-new-session')) {
         this.#engine.resetSession();
         this.#pendingBet = 0;
         this.#renderer.clearTable();
         this.#render();
+      }
+      if (e.target.classList.contains('bj-btn-insurance')) {
+        this.#handleTakeInsurance();
+      }
+      if (e.target.classList.contains('bj-btn-no-insurance')) {
+        this.#handleDeclineInsurance();
       }
     });
   }
@@ -127,6 +141,10 @@ export class UIController {
     if (state.phase === 'ROUND_OVER') {
       // Blackjack scenario -- round resolved immediately
       await this.#handleRoundOver();
+    } else if (state.phase === 'INSURANCE_OFFER') {
+      this.#renderer.showScores();
+      const insuranceCost = Math.floor(state.currentBet / 2);
+      this.#renderer._renderInsuranceControls(insuranceCost);
     } else {
       this.#renderer.showScores();
       this.#renderControls();
@@ -140,58 +158,101 @@ export class UIController {
     this.#engine.hit();
     const state = this.#engine.getState();
 
+    // Use activeHandIndex to determine the correct container
+    const activeContainer = state.activeHandIndex === 0
+      ? this.#renderer.playerHand0El
+      : this.#renderer.playerHand1El;
+    const activeHand = state.playerHands[state.hasSplit ? (state.phase === 'ROUND_OVER' ? this.#lastActiveIndex ?? 0 : state.activeHandIndex) : 0];
+
+    // For split: figure out which hand was just hit (might have advanced due to bust)
+    // The hand that got the card is determined by looking at card counts
+    let hitHandIndex;
+    if (state.hasSplit) {
+      // Find which hand has more cards than before (the one that was hit)
+      // Since we just called hit(), the active hand before bust-advance had the card added
+      // Use the container that corresponds to the hand with the new card
+      hitHandIndex = this.#findHitHandIndex(state);
+    } else {
+      hitHandIndex = 0;
+    }
+
+    const hitContainer = hitHandIndex === 0
+      ? this.#renderer.playerHand0El
+      : this.#renderer.playerHand1El;
+    const hitHand = state.playerHands[hitHandIndex];
+
     // Add the new card to DOM (invisible)
-    const newCard = state.playerHands[0].cards[state.playerHands[0].cards.length - 1];
-    const newEl = this.#renderer.addCardToHand(this.#renderer.playerHand0El, newCard);
+    const newCard = hitHand.cards[hitHand.cards.length - 1];
+    const newEl = this.#renderer.addCardToHand(hitContainer, newCard);
 
     // Update player score
-    this.#renderer.renderPlayerScore(state.playerHands[0], this.#renderer.playerHand0El);
+    this.#renderer.renderPlayerScore(hitHand, hitContainer);
 
     // Animate slide-in
     await this.#animManager.slideCardIn(newEl, this.#renderer.shoeEl);
 
     if (state.phase === 'ROUND_OVER') {
-      await this.#handleRoundOver();
+      if (state.hasSplit) {
+        this.#renderer.clearActiveHand();
+        await this.#animateDealerTurn(state);
+        await this.#handleSplitRoundOver();
+      } else {
+        await this.#handleRoundOver();
+      }
     } else {
+      // Check if hand advanced (bust on hand 0 moved to hand 1)
+      if (state.hasSplit) {
+        this.#renderer.setActiveHand(state.activeHandIndex);
+      }
       this.#renderControls();
     }
+  }
+
+  /** Track which hand index was last active before bust-advance */
+  #lastActiveIndex;
+
+  /**
+   * Find which hand was just hit by checking card counts against DOM.
+   * The engine may have advanced activeHandIndex on bust.
+   */
+  #findHitHandIndex(state) {
+    // The hand that was hit is the one whose card count exceeds DOM card count
+    const dom0Count = this.#renderer.getCardElements(this.#renderer.playerHand0El).length;
+    const dom1Count = this.#renderer.getCardElements(this.#renderer.playerHand1El).length;
+    const engine0Count = state.playerHands[0].cards.length;
+    const engine1Count = state.playerHands[1] ? state.playerHands[1].cards.length : 0;
+
+    if (engine0Count > dom0Count) return 0;
+    if (engine1Count > dom1Count) return 1;
+    // Fallback: use activeHandIndex
+    return state.activeHandIndex;
   }
 
   async #handleStand() {
     // Disable controls during dealer turn animation
     this.#renderer.renderControls('DEALER_TURN', [], true, this.#pendingBet, this.#engine.getState().chips);
 
-    // Save pre-stand dealer card count (should be 2)
     const dealerCardCountBefore = this.#engine.getState().dealerHand.cards.length;
 
     this.#engine.stand();
     const state = this.#engine.getState();
 
-    // Animate hole card flip (second dealer card)
-    const dealerCards = this.#renderer.getCardElements(this.#renderer.dealerHandEl);
-    if (dealerCards.length >= 2) {
-      // Update the hole card's face content before flipping
-      // The card element was rendered face-down; now update its front face with actual card data
-      const holeCardData = state.dealerHand.cards[1];
-      this.#updateCardFace(dealerCards[1], holeCardData);
-      await this.#animManager.flipCard(dealerCards[1]);
-    }
+    if (state.phase === 'ROUND_OVER') {
+      // Animate dealer turn
+      await this.#animateDealerTurn(state, dealerCardCountBefore);
 
-    // Update dealer score to show revealed value
-    this.#renderer.renderDealerScore(state.dealerHand);
-
-    // Animate any additional dealer cards drawn beyond the initial 2
-    if (state.dealerHand.cards.length > dealerCardCountBefore) {
-      for (let i = dealerCardCountBefore; i < state.dealerHand.cards.length; i++) {
-        const card = state.dealerHand.cards[i];
-        const newEl = this.#renderer.addCardToHand(this.#renderer.dealerHandEl, card);
-        await this.#animManager.slideCardIn(newEl, this.#renderer.shoeEl);
-        // Update dealer score after each card
-        this.#renderer.renderDealerScore(state.dealerHand);
+      if (state.hasSplit) {
+        this.#renderer.clearActiveHand();
+        await this.#handleSplitRoundOver();
+      } else {
+        await this.#handleRoundOver();
       }
+    } else if (state.phase === 'PLAYER_TURN') {
+      // Hand advanced to next (split scenario)
+      await new Promise(r => setTimeout(r, ANIM.HAND_ADVANCE_DELAY));
+      this.#renderer.setActiveHand(state.activeHandIndex);
+      this.#renderControls();
     }
-
-    await this.#handleRoundOver();
   }
 
   async #handleDouble() {
@@ -213,8 +274,95 @@ export class UIController {
     this.#renderer.renderPlayerScore(state.playerHands[0], this.#renderer.playerHand0El);
     await this.#animManager.slideCardIn(newEl, this.#renderer.shoeEl);
 
-    if (state.phase === 'ROUND_OVER' && !state.playerHands[0].isBust) {
-      // Not bust -- dealer turn happened in engine, animate it
+    if (state.phase === 'ROUND_OVER' && state.playerHands[state.activeHandIndex || 0].isBust) {
+      // Bust path (no dealer turn)
+      await this.#handleRoundOver();
+    } else if (state.phase === 'ROUND_OVER') {
+      await this.#animateDealerTurn(state, dealerCardCountBefore);
+      await this.#handleRoundOver();
+    }
+  }
+
+  async #handleSplit() {
+    // Disable controls during split animation
+    this.#renderer.renderControls('PLAYER_TURN', [], true, this.#pendingBet, this.#engine.getState().chips);
+
+    this.#engine.split();
+    const state = this.#engine.getState();
+
+    // Render both hands
+    this.#renderer.renderHand(this.#renderer.playerHand0El, state.playerHands[0].cards);
+    this.#renderer.renderPlayerScore(state.playerHands[0], this.#renderer.playerHand0El);
+    this.#renderer.renderHand(this.#renderer.playerHand1El, state.playerHands[1].cards);
+    this.#renderer.renderPlayerScore(state.playerHands[1], this.#renderer.playerHand1El);
+
+    // Update chips display (second bet deducted)
+    this.#renderer.renderChips(state.chips);
+
+    // Animate all new cards
+    const hand0Cards = this.#renderer.getCardElements(this.#renderer.playerHand0El);
+    const hand1Cards = this.#renderer.getCardElements(this.#renderer.playerHand1El);
+
+    for (const el of [...hand0Cards, ...hand1Cards]) {
+      await this.#animManager.slideCardIn(el, this.#renderer.shoeEl);
+    }
+
+    // Show scores
+    this.#renderer.showScores();
+
+    if (state.phase === 'ROUND_OVER') {
+      // Split aces auto-stood both hands: dealer played, round over
+      await this.#animateDealerTurn(state);
+      this.#renderer.clearActiveHand();
+      await this.#handleSplitRoundOver();
+    } else {
+      // Set active hand glow on hand 0
+      this.#renderer.setActiveHand(state.activeHandIndex);
+      this.#renderControls();
+    }
+  }
+
+  async #handleTakeInsurance() {
+    this.#engine.takeInsurance();
+    const state = this.#engine.getState();
+
+    // Remove insurance buttons, restore normal controls
+    this.#renderer._removeInsuranceControls();
+
+    // Flip dealer hole card
+    const dealerCards = this.#renderer.getCardElements(this.#renderer.dealerHandEl);
+    if (dealerCards.length >= 2) {
+      const holeCardData = state.dealerHand.cards[1];
+      this.#updateCardFace(dealerCards[1], holeCardData);
+      await this.#animManager.flipCard(dealerCards[1]);
+    }
+    this.#renderer.renderDealerScore(state.dealerHand);
+    this.#renderer.renderChips(state.chips);
+
+    if (state.phase === 'ROUND_OVER') {
+      // Dealer had blackjack, insurance won
+      if (state.result.insuranceResult === 'WON') {
+        const payoutDollars = Math.floor(state.result.insurancePayout / 100);
+        await this.#renderer.showStatusMessage(`Insurance pays +$${payoutDollars}`, 1500);
+      }
+      await this.#handleRoundOver();
+    } else {
+      // Dealer did NOT have blackjack, insurance lost
+      const lostDollars = Math.floor(state.insuranceBet / 100);
+      await this.#renderer.showStatusMessage(`Insurance lost -$${lostDollars}`, 1500);
+      this.#renderControls();
+    }
+  }
+
+  async #handleDeclineInsurance() {
+    this.#engine.declineInsurance();
+    const state = this.#engine.getState();
+
+    // Remove insurance buttons
+    this.#renderer._removeInsuranceControls();
+
+    if (state.phase === 'ROUND_OVER') {
+      // Dealer had blackjack
       const dealerCards = this.#renderer.getCardElements(this.#renderer.dealerHandEl);
       if (dealerCards.length >= 2) {
         const holeCardData = state.dealerHand.cards[1];
@@ -222,19 +370,76 @@ export class UIController {
         await this.#animManager.flipCard(dealerCards[1]);
       }
       this.#renderer.renderDealerScore(state.dealerHand);
+      await this.#handleRoundOver();
+    } else {
+      // No dealer blackjack, play continues
+      this.#renderControls();
+    }
+  }
 
-      // Animate any additional dealer cards
-      if (state.dealerHand.cards.length > dealerCardCountBefore) {
-        for (let i = dealerCardCountBefore; i < state.dealerHand.cards.length; i++) {
-          const card = state.dealerHand.cards[i];
-          const addedEl = this.#renderer.addCardToHand(this.#renderer.dealerHandEl, card);
-          await this.#animManager.slideCardIn(addedEl, this.#renderer.shoeEl);
-          this.#renderer.renderDealerScore(state.dealerHand);
-        }
+  /**
+   * Animate dealer turn: flip hole card and animate any additional cards drawn.
+   * @param {object} state - Engine state after dealer turn completed
+   * @param {number} [dealerCardCountBefore=2] - Number of dealer cards before dealer drew
+   */
+  async #animateDealerTurn(state, dealerCardCountBefore = 2) {
+    // Flip hole card
+    const dealerCards = this.#renderer.getCardElements(this.#renderer.dealerHandEl);
+    if (dealerCards.length >= 2) {
+      const holeCardData = state.dealerHand.cards[1];
+      this.#updateCardFace(dealerCards[1], holeCardData);
+      await this.#animManager.flipCard(dealerCards[1]);
+    }
+    this.#renderer.renderDealerScore(state.dealerHand);
+
+    // Animate additional dealer cards
+    if (state.dealerHand.cards.length > dealerCardCountBefore) {
+      for (let i = dealerCardCountBefore; i < state.dealerHand.cards.length; i++) {
+        const card = state.dealerHand.cards[i];
+        const addedEl = this.#renderer.addCardToHand(this.#renderer.dealerHandEl, card);
+        await this.#animManager.slideCardIn(addedEl, this.#renderer.shoeEl);
+        this.#renderer.renderDealerScore(state.dealerHand);
       }
     }
+  }
 
-    await this.#handleRoundOver();
+  /**
+   * Handle split round over: show sequential banners, discard, and reset.
+   */
+  async #handleSplitRoundOver() {
+    const state = this.#engine.getState();
+    const result = state.result;
+
+    // Disable all controls during result display
+    this.#renderer.renderControls(state.phase, [], true, this.#pendingBet, state.chips);
+
+    // Show sequential banners
+    const perHandBet = state.playerHands[0].bet;
+    await this.#renderer.showSplitResult(result.handResults, perHandBet);
+
+    // Discard all cards (from both hand zones and dealer)
+    const allCards = [
+      ...this.#renderer.getCardElements(this.#renderer.dealerHandEl),
+      ...this.#renderer.getCardElements(this.#renderer.playerHand0El),
+      ...this.#renderer.getCardElements(this.#renderer.playerHand1El),
+    ];
+
+    if (allCards.length > 0) {
+      await this.#animManager.discardAll(allCards, this.#renderer.discardEl);
+    }
+
+    this.#renderer.hideScores();
+    this.#renderer.clearTable();
+
+    // Render chips with updated balance
+    this.#renderer.renderChips(state.chips);
+
+    if (state.chips > 0) {
+      this.#engine.startNewRound();
+      this.#render();
+    } else {
+      this.#render();
+    }
   }
 
   /**
@@ -285,6 +490,7 @@ export class UIController {
     const allCards = [
       ...this.#renderer.getCardElements(this.#renderer.dealerHandEl),
       ...this.#renderer.getCardElements(this.#renderer.playerHand0El),
+      ...this.#renderer.getCardElements(this.#renderer.playerHand1El),
     ];
 
     if (allCards.length > 0) {
@@ -337,6 +543,11 @@ export class UIController {
       this.#renderer.renderPlayerScore(state.playerHands[0], this.#renderer.playerHand0El);
     }
 
+    if (state.playerHands[1] && state.playerHands[1].cards.length > 0) {
+      this.#renderer.renderHand(this.#renderer.playerHand1El, state.playerHands[1].cards);
+      this.#renderer.renderPlayerScore(state.playerHands[1], this.#renderer.playerHand1El);
+    }
+
     // Render dealer hand
     if (state.dealerHand && state.dealerHand.cards && state.dealerHand.cards.length > 0) {
       this.#renderer.renderHand(this.#renderer.dealerHandEl, state.dealerHand.cards);
@@ -344,13 +555,18 @@ export class UIController {
     }
 
     // Render controls
-    this.#renderer.renderControls(
-      state.phase,
-      actions,
-      this.#animManager.isBusy,
-      this.#pendingBet,
-      state.chips
-    );
+    if (state.phase === 'INSURANCE_OFFER') {
+      const insuranceCost = Math.floor(state.currentBet / 2);
+      this.#renderer._renderInsuranceControls(insuranceCost);
+    } else {
+      this.#renderer.renderControls(
+        state.phase,
+        actions,
+        this.#animManager.isBusy,
+        this.#pendingBet,
+        state.chips
+      );
+    }
   }
 }
 

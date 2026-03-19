@@ -26,6 +26,7 @@ export class TableRenderer {
     this.standBtn = document.querySelector('.bj-btn-stand');
     this.doubleBtn = document.querySelector('.bj-btn-double');
     this.dealBtn = document.querySelector('.bj-btn-deal');
+    this.splitBtn = document.querySelector('.bj-btn-split');
   }
 
   /**
@@ -165,6 +166,12 @@ export class TableRenderer {
    * animation state, pending bet, and chip balance.
    */
   renderControls(phase, availableActions, animBusy, pendingBet, chips) {
+    // Handle insurance phase
+    if (phase === 'INSURANCE_OFFER' && !animBusy) {
+      this._renderInsuranceControls(pendingBet); // pendingBet is overloaded; caller passes insuranceCost
+      return;
+    }
+
     // If animation is running, disable everything
     if (animBusy) {
       this.chipBtns.forEach(btn => { btn.disabled = true; });
@@ -173,6 +180,7 @@ export class TableRenderer {
       this.hitBtn.disabled = true;
       this.standBtn.disabled = true;
       this.doubleBtn.disabled = true;
+      if (this.splitBtn) this.splitBtn.disabled = true;
       return;
     }
 
@@ -202,6 +210,9 @@ export class TableRenderer {
     this.hitBtn.disabled = !availableActions.includes('hit');
     this.standBtn.disabled = !availableActions.includes('stand');
     this.doubleBtn.disabled = !availableActions.includes('doubleDown');
+    if (this.splitBtn) {
+      this.splitBtn.disabled = !availableActions.includes('split');
+    }
   }
 
   /**
@@ -246,6 +257,155 @@ export class TableRenderer {
     const actionRow = this.controlsZoneEl.querySelector('.bj-action-row');
     if (chipRow) chipRow.style.display = '';
     if (actionRow) actionRow.style.display = '';
+  }
+
+  /**
+   * Set the active hand glow during split play.
+   * @param {number} index - 0 or 1
+   */
+  setActiveHand(index) {
+    this.playerHand0El.closest('.bj-hand-area')?.classList.remove('bj-hand-area--active');
+    this.playerHand1El.closest('.bj-hand-area')?.classList.remove('bj-hand-area--active');
+
+    if (index === 0) {
+      this.playerHand0El.closest('.bj-hand-area')?.classList.add('bj-hand-area--active');
+    } else if (index === 1) {
+      this.playerHand1El.closest('.bj-hand-area')?.classList.add('bj-hand-area--active');
+    }
+  }
+
+  /**
+   * Clear active hand glow from all hand areas.
+   */
+  clearActiveHand() {
+    this.playerHand0El.closest('.bj-hand-area')?.classList.remove('bj-hand-area--active');
+    this.playerHand1El.closest('.bj-hand-area')?.classList.remove('bj-hand-area--active');
+  }
+
+  /**
+   * Render insurance controls: replace chip/action rows with amber insurance buttons.
+   * @param {number} insuranceCost - Cost of insurance in cents
+   */
+  _renderInsuranceControls(insuranceCost) {
+    const chipRow = this.controlsZoneEl.querySelector('.bj-chip-row');
+    const actionRow = this.controlsZoneEl.querySelector('.bj-action-row');
+    if (chipRow) chipRow.style.display = 'none';
+    if (actionRow) actionRow.style.display = 'none';
+
+    // Remove any existing insurance row
+    const existing = this.controlsZoneEl.querySelector('.bj-insurance-row');
+    if (existing) existing.remove();
+
+    const insuranceRow = document.createElement('div');
+    insuranceRow.className = 'bj-insurance-row';
+
+    const takeBtn = document.createElement('button');
+    takeBtn.className = 'bj-btn-insurance';
+    takeBtn.textContent = `Take Insurance ($${Math.floor(insuranceCost / 100)})`;
+
+    const declineBtn = document.createElement('button');
+    declineBtn.className = 'bj-btn-no-insurance';
+    declineBtn.textContent = 'No Insurance';
+
+    insuranceRow.appendChild(takeBtn);
+    insuranceRow.appendChild(declineBtn);
+    this.controlsZoneEl.appendChild(insuranceRow);
+  }
+
+  /**
+   * Remove insurance controls and restore normal chip/action rows.
+   */
+  _removeInsuranceControls() {
+    const insuranceRow = this.controlsZoneEl.querySelector('.bj-insurance-row');
+    if (insuranceRow) insuranceRow.remove();
+
+    const chipRow = this.controlsZoneEl.querySelector('.bj-chip-row');
+    const actionRow = this.controlsZoneEl.querySelector('.bj-action-row');
+    if (chipRow) chipRow.style.display = '';
+    if (actionRow) actionRow.style.display = '';
+  }
+
+  /**
+   * Show a brief inline status message (e.g., insurance outcome).
+   * @param {string} text - Message text
+   * @param {number} duration - Display duration in ms
+   * @returns {Promise<void>}
+   */
+  showStatusMessage(text, duration) {
+    // Remove existing
+    const existing = this.controlsZoneEl.querySelector('.bj-status-message');
+    if (existing) existing.remove();
+
+    const msgEl = document.createElement('div');
+    msgEl.className = 'bj-status-message';
+    msgEl.textContent = text;
+    this.resultBannerEl.parentElement.insertBefore(msgEl, this.resultBannerEl);
+
+    return new Promise(resolve => {
+      setTimeout(() => {
+        msgEl.remove();
+        resolve();
+      }, duration);
+    });
+  }
+
+  /**
+   * Show sequential result banners for split hands.
+   * Shows each hand result, then the net result.
+   * @param {Array<{outcome: string, payout: number}>} handResults
+   * @param {number} currentBet - Per-hand bet in cents
+   */
+  async showSplitResult(handResults, currentBet) {
+    for (let i = 0; i < handResults.length; i++) {
+      const hr = handResults[i];
+      let text, outcomeClass;
+
+      if (hr.outcome === 'WIN') {
+        text = `WIN Hand ${i + 1}: +${formatChips(hr.payout - currentBet)}`;
+        outcomeClass = 'bj-result-banner--win';
+      } else if (hr.outcome === 'LOSS') {
+        text = `Loss Hand ${i + 1}: -${formatChips(currentBet)}`;
+        outcomeClass = 'bj-result-banner--loss';
+      } else {
+        text = `Push Hand ${i + 1}: Push`;
+        outcomeClass = 'bj-result-banner--push';
+      }
+
+      this.resultBannerEl.className = 'bj-result-banner';
+      this.resultBannerEl.textContent = text;
+      this.resultBannerEl.classList.add(outcomeClass);
+      this.resultBannerEl.classList.remove('bj-result-banner--hidden');
+
+      await new Promise(r => setTimeout(r, ANIM.BANNER_SEQUENTIAL));
+      this.resultBannerEl.classList.add('bj-result-banner--hidden');
+      await new Promise(r => setTimeout(r, ANIM.RESULT_FADE));
+    }
+
+    // Show net result
+    const totalPayout = handResults.reduce((s, h) => s + h.payout, 0);
+    const totalBet = currentBet * handResults.length;
+    const netCents = totalPayout - totalBet;
+    let netText, netClass;
+
+    if (netCents > 0) {
+      netText = `Net: +${formatChips(netCents)}`;
+      netClass = 'bj-result-banner--win';
+    } else if (netCents < 0) {
+      netText = `Net: -${formatChips(Math.abs(netCents))}`;
+      netClass = 'bj-result-banner--loss';
+    } else {
+      netText = 'Net: Push';
+      netClass = 'bj-result-banner--push';
+    }
+
+    this.resultBannerEl.className = 'bj-result-banner';
+    this.resultBannerEl.textContent = netText;
+    this.resultBannerEl.classList.add(netClass);
+    this.resultBannerEl.classList.remove('bj-result-banner--hidden');
+
+    await new Promise(r => setTimeout(r, ANIM.RESULT_DISPLAY));
+    this.resultBannerEl.classList.add('bj-result-banner--hidden');
+    await new Promise(r => setTimeout(r, ANIM.RESULT_FADE));
   }
 
   /**
