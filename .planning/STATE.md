@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 03-01-PLAN.md
-last_updated: "2026-03-19T02:17:15Z"
-last_activity: 2026-03-19 -- Plan 03-01 executed (split, insurance, dealer deviation engine logic)
+stopped_at: Completed 03-02-PLAN.md
+last_updated: "2026-03-19T02:23:54Z"
+last_activity: 2026-03-19 -- Plan 03-02 executed (split/insurance UI wiring, sequential banners)
 progress:
   total_phases: 5
   completed_phases: 2
   total_plans: 9
-  completed_plans: 7
-  percent: 78
+  completed_plans: 8
+  percent: 89
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-03-16)
 ## Current Position
 
 Phase: 3 of 5 (Full Casino Rules)
-Plan: 2 of 3 in current phase
+Plan: 3 of 3 in current phase
 Status: Executing
-Last activity: 2026-03-19 -- Plan 03-01 executed (split, insurance, dealer deviation engine logic)
+Last activity: 2026-03-19 -- Plan 03-02 executed (split/insurance UI wiring, sequential banners)
 
-Progress: [████████░░] 78%
+Progress: [█████████░] 89%
 
 ## Performance Metrics
 
@@ -45,10 +45,10 @@ Progress: [████████░░] 78%
 |-------|-------|-------|----------|
 | 01-game-engine | 3 | 9min | 3min |
 | 02-visual-game | 1 | 3min | 3min |
-| 03-full-casino-rules | 1 | 4min | 4min |
+| 03-full-casino-rules | 2 | 8min | 4min |
 
 **Recent Trend:**
-- Last 5 plans: 01-02 (4min), 01-03 (2min), 02-01 (3min), 03-01 (4min)
+- Last 5 plans: 01-03 (2min), 02-01 (3min), 03-01 (4min), 03-02 (4min)
 - Trend: Consistent
 
 *Updated after each plan completion*
@@ -81,6 +81,9 @@ Recent decisions affecting current work:
 - [03-01]: Dealer deviation inverts hit/stand at 6% probability, counter accumulates per session
 - [03-01]: Multi-hand #resolveRound uses net outcome based on total payout vs total bet
 - [03-01]: #advanceHand() returns NEXT_HAND or DEALER_TURN for sequential hand play
+- [03-02]: Insurance buttons use delegated click handler (dynamic DOM elements)
+- [03-02]: Split hand hit detection uses DOM card count comparison
+- [03-02]: #animateDealerTurn() extracted as shared DRY helper for dealer animation
 
 ### Pending Todos
 
@@ -92,6 +95,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-19T02:17:15Z
-Stopped at: Completed 03-01-PLAN.md
-Resume file: .planning/phases/03-full-casino-rules/03-02-PLAN.md
+Last session: 2026-03-19T02:23:54Z
+Stopped at: Completed 03-02-PLAN.md
+Resume file: .planning/phases/03-full-casino-rules/03-03-PLAN.md
