@@ -18,4 +18,13 @@ export class SoundManager {
 
   /** Called when a hand busts */
   bust() {}
+
+  /** Called when player splits a pair */
+  splitPlaced() {}
+
+  /** Called when player takes insurance */
+  insurancePlaced() {}
+
+  /** Called when insurance bet wins */
+  insuranceWon() {}
 }
