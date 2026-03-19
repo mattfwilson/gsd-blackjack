@@ -63,12 +63,12 @@ Plans:
   2. When the dealer shows an ace, the player is offered insurance at half the original bet, paying 2:1 if the dealer has blackjack
   3. The dealer deviates from standard hit/stand logic at a configurable low probability, and each deviation is logged internally
   4. SoundManager stubs fire at the correct AnimationManager lifecycle events, and activating a sound requires only providing an audio file path and removing the no-op
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 03-01: TBD
-- [ ] 03-02: TBD
-- [ ] 03-03: TBD
+- [ ] 03-01-PLAN.md — Engine logic: split, insurance, dealer deviation + constants + SoundManager stubs + tests
+- [ ] 03-02-PLAN.md — UI wiring: split active hand glow, insurance button swap, sequential result banners
+- [ ] 03-03-PLAN.md — Sound stub lifecycle wiring + visual verification checkpoint
 
 ### Phase 4: Session Stats
 **Goal**: The player can see live session statistics updating as they play -- hands played, earnings per round, net earnings, hit probabilities, and win streaks
