@@ -1,5 +1,6 @@
 import { Deck } from './Deck.js';
 import { computeHandValue, createHand, addCardToHand } from './Hand.js';
+import { DEALER_DEVIATION_PROB } from '../constants.js';
 
 export class GameEngine {
   #deck;
@@ -10,6 +11,9 @@ export class GameEngine {
   #currentBet;
   #result;
   #activeHandIndex;
+  #hasSplit;
+  #insuranceBet;
+  #deviationCount;
 
   constructor() {
     this.#deck = new Deck(6);
@@ -20,6 +24,9 @@ export class GameEngine {
     this.#dealerHand = createHand();
     this.#result = null;
     this.#activeHandIndex = 0;
+    this.#hasSplit = false;
+    this.#insuranceBet = 0;
+    this.#deviationCount = 0;
   }
 
   placeBet(amountCents) {
@@ -109,6 +116,9 @@ export class GameEngine {
         handResults: [{ outcome: 'LOSS', payout: 0 }]
       };
       this.#phase = 'ROUND_OVER';
+    } else if (this.#dealerHand.cards[0].rank === 'A') {
+      // Dealer shows ace, player doesn't have blackjack -- offer insurance
+      this.#phase = 'INSURANCE_OFFER';
     } else {
       this.#phase = 'PLAYER_TURN';
     }
@@ -127,15 +137,20 @@ export class GameEngine {
     );
 
     if (this.#playerHands[this.#activeHandIndex].isBust) {
-      this.#revealDealerHoleCard();
-      this.#result = {
-        outcome: 'LOSS',
-        playerValue: this.#playerHands[this.#activeHandIndex].value,
-        dealerValue: this.#dealerHand.value,
-        payout: 0,
-        handResults: [{ outcome: 'LOSS', payout: 0 }]
-      };
-      this.#phase = 'ROUND_OVER';
+      const advanceResult = this.#advanceHand();
+      if (advanceResult === 'DEALER_TURN') {
+        // Check if ALL hands busted -- if so skip dealer turn
+        const allBust = this.#playerHands.every(h => h.isBust);
+        if (allBust) {
+          this.#revealDealerHoleCard();
+          this.#resolveRound();
+        } else {
+          this.#phase = 'DEALER_TURN';
+          this.#playDealerTurn();
+          this.#resolveRound();
+        }
+      }
+      // else advanceResult === 'NEXT_HAND', stay in PLAYER_TURN
     }
     return this.#getState();
   }
@@ -144,15 +159,22 @@ export class GameEngine {
     if (this.#phase !== 'PLAYER_TURN') {
       throw new Error('Can only stand during PLAYER_TURN phase');
     }
-    this.#phase = 'DEALER_TURN';
-    this.#playDealerTurn();
-    this.#resolveRound();
+    const advanceResult = this.#advanceHand();
+    if (advanceResult === 'DEALER_TURN') {
+      this.#phase = 'DEALER_TURN';
+      this.#playDealerTurn();
+      this.#resolveRound();
+    }
+    // else NEXT_HAND, stay in PLAYER_TURN
     return this.#getState();
   }
 
   doubleDown() {
     if (this.#phase !== 'PLAYER_TURN') {
       throw new Error('Can only double down during PLAYER_TURN phase');
+    }
+    if (this.#hasSplit) {
+      throw new Error('Cannot double down after splitting');
     }
     const hand = this.#playerHands[this.#activeHandIndex];
     if (hand.cards.length !== 2) {
@@ -175,18 +197,126 @@ export class GameEngine {
 
     if (this.#playerHands[this.#activeHandIndex].isBust) {
       this.#revealDealerHoleCard();
-      this.#result = {
-        outcome: 'LOSS',
-        playerValue: this.#playerHands[this.#activeHandIndex].value,
-        dealerValue: this.#dealerHand.value,
-        payout: 0,
-        handResults: [{ outcome: 'LOSS', payout: 0 }]
-      };
-      this.#phase = 'ROUND_OVER';
+      this.#resolveRound();
     } else {
       this.#phase = 'DEALER_TURN';
       this.#playDealerTurn();
       this.#resolveRound();
+    }
+    return this.#getState();
+  }
+
+  split() {
+    if (this.#phase !== 'PLAYER_TURN') {
+      throw new Error('Can only split during PLAYER_TURN phase');
+    }
+    if (this.#hasSplit) {
+      throw new Error('Cannot re-split');
+    }
+    const hand = this.#playerHands[0];
+    if (hand.cards.length !== 2) {
+      throw new Error('Can only split with exactly 2 cards');
+    }
+    const val0 = this.#getCardSplitValue(hand.cards[0]);
+    const val1 = this.#getCardSplitValue(hand.cards[1]);
+    if (val0 !== val1) {
+      throw new Error('Can only split cards of equal value');
+    }
+    if (this.#chips < hand.bet) {
+      throw new Error('Insufficient chips to split');
+    }
+
+    // Deduct second bet
+    this.#chips -= hand.bet;
+
+    const card1 = hand.cards[0];
+    const card2 = hand.cards[1];
+    const bet = hand.bet;
+
+    // Create two new hands
+    let hand0 = createHand(bet);
+    hand0 = addCardToHand(hand0, card1);
+    hand0 = addCardToHand(hand0, this.#deck.draw());
+
+    let hand1 = createHand(bet);
+    hand1 = addCardToHand(hand1, card2);
+    hand1 = addCardToHand(hand1, this.#deck.draw());
+
+    this.#playerHands = [hand0, hand1];
+    this.#activeHandIndex = 0;
+    this.#hasSplit = true;
+
+    // Split aces: auto-stand both hands, go to dealer turn
+    if (card1.rank === 'A') {
+      this.#phase = 'DEALER_TURN';
+      this.#playDealerTurn();
+      this.#resolveRound();
+      return this.#getState();
+    }
+
+    return this.#getState();
+  }
+
+  takeInsurance() {
+    if (this.#phase !== 'INSURANCE_OFFER') {
+      throw new Error('Can only take insurance during INSURANCE_OFFER phase');
+    }
+    const insuranceCost = Math.floor(this.#currentBet / 2);
+    this.#chips -= insuranceCost;
+    this.#insuranceBet = insuranceCost;
+
+    // Check dealer blackjack
+    const dealerTrueValue = computeHandValue(
+      this.#dealerHand.cards.map(c => ({ ...c, faceDown: false }))
+    );
+
+    if (dealerTrueValue.isBlackjack) {
+      // Insurance wins: pays 2:1
+      const insurancePayout = this.#insuranceBet * 3; // original + 2x
+      this.#chips += insurancePayout;
+      this.#revealDealerHoleCard();
+      this.#result = {
+        outcome: 'LOSS',
+        playerValue: this.#playerHands[0].value,
+        dealerValue: dealerTrueValue.value,
+        payout: 0,
+        handResults: [{ outcome: 'LOSS', payout: 0 }],
+        insuranceResult: 'WON',
+        insurancePayout: insurancePayout
+      };
+      this.#phase = 'ROUND_OVER';
+    } else {
+      // Insurance lost
+      this.#result = null;
+      this.#phase = 'PLAYER_TURN';
+    }
+    return this.#getState();
+  }
+
+  declineInsurance() {
+    if (this.#phase !== 'INSURANCE_OFFER') {
+      throw new Error('Can only decline insurance during INSURANCE_OFFER phase');
+    }
+
+    // Check dealer blackjack anyway
+    const dealerTrueValue = computeHandValue(
+      this.#dealerHand.cards.map(c => ({ ...c, faceDown: false }))
+    );
+
+    if (dealerTrueValue.isBlackjack) {
+      this.#revealDealerHoleCard();
+      this.#result = {
+        outcome: 'LOSS',
+        playerValue: this.#playerHands[0].value,
+        dealerValue: dealerTrueValue.value,
+        payout: 0,
+        handResults: [{ outcome: 'LOSS', payout: 0 }],
+        insuranceResult: 'DECLINED',
+        insurancePayout: 0
+      };
+      this.#phase = 'ROUND_OVER';
+    } else {
+      this.#phase = 'PLAYER_TURN';
     }
     return this.#getState();
   }
@@ -204,6 +334,9 @@ export class GameEngine {
     this.#dealerHand = createHand();
     this.#result = null;
     this.#activeHandIndex = 0;
+    this.#hasSplit = false;
+    this.#insuranceBet = 0;
+    // Do NOT reset #deviationCount -- it accumulates across the session
     return this.#getState();
   }
 
@@ -213,11 +346,21 @@ export class GameEngine {
         return ['placeBet'];
       case 'DEALING':
         return ['deal'];
+      case 'INSURANCE_OFFER':
+        return ['takeInsurance', 'declineInsurance'];
       case 'PLAYER_TURN': {
         const actions = ['hit', 'stand'];
         const hand = this.#playerHands[this.#activeHandIndex];
-        if (hand.cards.length === 2 && this.#chips >= this.#currentBet) {
+        if (hand.cards.length === 2 && this.#chips >= hand.bet && !this.#hasSplit) {
           actions.push('doubleDown');
+        }
+        if (
+          hand.cards.length === 2 &&
+          !this.#hasSplit &&
+          this.#getCardSplitValue(hand.cards[0]) === this.#getCardSplitValue(hand.cards[1]) &&
+          this.#chips >= hand.bet
+        ) {
+          actions.push('split');
         }
         return actions;
       }
@@ -241,11 +384,28 @@ export class GameEngine {
     this.#dealerHand = createHand();
     this.#result = null;
     this.#activeHandIndex = 0;
+    this.#hasSplit = false;
+    this.#insuranceBet = 0;
+    this.#deviationCount = 0;
     return this.#getState();
   }
 
   getState() {
     return this.#getState();
+  }
+
+  #getCardSplitValue(card) {
+    if (['J', 'Q', 'K'].includes(card.rank)) return 10;
+    if (card.rank === 'A') return 11;
+    return parseInt(card.rank, 10);
+  }
+
+  #advanceHand() {
+    if (this.#activeHandIndex < this.#playerHands.length - 1) {
+      this.#activeHandIndex++;
+      return 'NEXT_HAND';
+    }
+    return 'DEALER_TURN';
   }
 
   #playDealerTurn() {
@@ -256,8 +416,18 @@ export class GameEngine {
     const dealerComputed = computeHandValue(visibleCards);
     this.#dealerHand = { ...this.#dealerHand, cards: visibleCards, ...dealerComputed };
 
-    // Dealer hits while value < 17, stands on all 17s (hard and soft)
-    while (this.#dealerHand.value < 17) {
+    while (true) {
+      const shouldHitStandard = this.#dealerHand.value < 17;
+      let shouldHit = shouldHitStandard;
+
+      if (Math.random() < DEALER_DEVIATION_PROB) {
+        shouldHit = !shouldHitStandard;
+        this.#deviationCount++;
+      }
+
+      if (!shouldHit) break;
+      if (this.#dealerHand.isBust) break;
+
       const card = this.#deck.draw();
       this.#dealerHand = addCardToHand(this.#dealerHand, card);
     }
@@ -270,32 +440,41 @@ export class GameEngine {
   }
 
   #resolveRound() {
-    const playerHand = this.#playerHands[this.#activeHandIndex];
     const dealerValue = this.#dealerHand.value;
-    const playerValue = playerHand.value;
-    let roundOutcome, roundPayout;
+    const dealerBust = this.#dealerHand.isBust;
+    const handResults = [];
+    let totalPayout = 0;
 
-    if (this.#dealerHand.isBust) {
-      roundOutcome = 'WIN';
-      roundPayout = this.#currentBet * 2;
-    } else if (playerValue > dealerValue) {
-      roundOutcome = 'WIN';
-      roundPayout = this.#currentBet * 2;
-    } else if (playerValue < dealerValue) {
-      roundOutcome = 'LOSS';
-      roundPayout = 0;
-    } else {
-      roundOutcome = 'PUSH';
-      roundPayout = this.#currentBet;
+    for (const hand of this.#playerHands) {
+      let outcome, payout;
+      if (hand.isBust) {
+        outcome = 'LOSS'; payout = 0;
+      } else if (dealerBust) {
+        outcome = 'WIN'; payout = hand.bet * 2;
+      } else if (hand.value > dealerValue) {
+        outcome = 'WIN'; payout = hand.bet * 2;
+      } else if (hand.value < dealerValue) {
+        outcome = 'LOSS'; payout = 0;
+      } else {
+        outcome = 'PUSH'; payout = hand.bet;
+      }
+      handResults.push({ outcome, payout });
+      totalPayout += payout;
     }
 
-    this.#chips += roundPayout;
+    this.#chips += totalPayout;
+
+    const totalBet = this.#playerHands.reduce((sum, h) => sum + h.bet, 0);
+    const netOutcome = totalPayout > totalBet ? 'WIN'
+                     : totalPayout < totalBet ? 'LOSS'
+                     : 'PUSH';
+
     this.#result = {
-      outcome: roundOutcome,
-      playerValue,
+      outcome: netOutcome,
+      playerValue: this.#playerHands[0].value,
       dealerValue,
-      payout: roundPayout,
-      handResults: [{ outcome: roundOutcome, payout: roundPayout }]
+      payout: totalPayout,
+      handResults
     };
     this.#phase = 'ROUND_OVER';
   }
@@ -321,6 +500,10 @@ export class GameEngine {
       },
       chips: this.#chips,
       currentBet: this.#currentBet,
+      activeHandIndex: this.#activeHandIndex,
+      hasSplit: this.#hasSplit,
+      insuranceBet: this.#insuranceBet,
+      deviationCount: this.#deviationCount,
       result: this.#result ? {
         ...this.#result,
         handResults: this.#result.handResults.map(hr => ({ ...hr }))
