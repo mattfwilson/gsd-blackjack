@@ -136,6 +136,11 @@ export class UIController {
     const dealOrder = [playerCards[0], dealerCards[0], playerCards[1], dealerCards[1]];
 
     await this.#animManager.dealCards(dealOrder, this.#renderer.shoeEl);
+    this.#sound.betPlaced();
+    // Cards have been dealt -- fire cardDealt for each card dealt
+    for (let i = 0; i < dealOrder.length; i++) {
+      this.#sound.cardDealt();
+    }
 
     // Re-render controls with actual state
     if (state.phase === 'ROUND_OVER') {
@@ -190,6 +195,10 @@ export class UIController {
 
     // Animate slide-in
     await this.#animManager.slideCardIn(newEl, this.#renderer.shoeEl);
+    this.#sound.cardDealt();
+    if (hitHand.isBust) {
+      this.#sound.bust();
+    }
 
     if (state.phase === 'ROUND_OVER') {
       if (state.hasSplit) {
@@ -273,6 +282,10 @@ export class UIController {
     const newEl = this.#renderer.addCardToHand(this.#renderer.playerHand0El, newCard);
     this.#renderer.renderPlayerScore(state.playerHands[0], this.#renderer.playerHand0El);
     await this.#animManager.slideCardIn(newEl, this.#renderer.shoeEl);
+    this.#sound.cardDealt();
+    if (state.playerHands[0].isBust) {
+      this.#sound.bust();
+    }
 
     if (state.phase === 'ROUND_OVER' && state.playerHands[state.activeHandIndex || 0].isBust) {
       // Bust path (no dealer turn)
@@ -306,6 +319,10 @@ export class UIController {
     for (const el of [...hand0Cards, ...hand1Cards]) {
       await this.#animManager.slideCardIn(el, this.#renderer.shoeEl);
     }
+    this.#sound.splitPlaced();
+    // Fire cardDealt for each new card (2 new cards dealt, one per hand)
+    this.#sound.cardDealt();
+    this.#sound.cardDealt();
 
     // Show scores
     this.#renderer.showScores();
@@ -336,12 +353,14 @@ export class UIController {
       this.#updateCardFace(dealerCards[1], holeCardData);
       await this.#animManager.flipCard(dealerCards[1]);
     }
+    this.#sound.insurancePlaced();
     this.#renderer.renderDealerScore(state.dealerHand);
     this.#renderer.renderChips(state.chips);
 
     if (state.phase === 'ROUND_OVER') {
       // Dealer had blackjack, insurance won
       if (state.result.insuranceResult === 'WON') {
+        this.#sound.insuranceWon();
         const payoutDollars = Math.floor(state.result.insurancePayout / 100);
         await this.#renderer.showStatusMessage(`Insurance pays +$${payoutDollars}`, 1500);
       }
@@ -398,6 +417,7 @@ export class UIController {
         const card = state.dealerHand.cards[i];
         const addedEl = this.#renderer.addCardToHand(this.#renderer.dealerHandEl, card);
         await this.#animManager.slideCardIn(addedEl, this.#renderer.shoeEl);
+        this.#sound.cardDealt();
         this.#renderer.renderDealerScore(state.dealerHand);
       }
     }
@@ -416,6 +436,12 @@ export class UIController {
     // Show sequential banners
     const perHandBet = state.playerHands[0].bet;
     await this.#renderer.showSplitResult(result.handResults, perHandBet);
+    const netPayout = result.handResults.reduce((s, h) => s + h.payout, 0);
+    const totalBet = state.playerHands.reduce((s, h) => s + h.bet, 0);
+    if (netPayout > totalBet) {
+      this.#sound.chipsWon();
+      this.#sound.roundWon();
+    }
 
     // Discard all cards (from both hand zones and dealer)
     const allCards = [
@@ -485,6 +511,10 @@ export class UIController {
 
     // Show result banner and wait for auto-clear
     await this.#renderer.showResult(result, currentBet, isBust);
+    if (result.outcome === 'WIN' || result.outcome === 'BLACKJACK') {
+      this.#sound.chipsWon();
+      this.#sound.roundWon();
+    }
 
     // Collect all card elements and discard sweep
     const allCards = [
