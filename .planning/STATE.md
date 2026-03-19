@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Phase 3 UI-SPEC approved
-last_updated: "2026-03-19T01:48:51.624Z"
-last_activity: 2026-03-17 -- Plan 02-01 executed (constants, CSS design system, CardRenderer)
+stopped_at: Completed 03-01-PLAN.md
+last_updated: "2026-03-19T02:17:15Z"
+last_activity: 2026-03-19 -- Plan 03-01 executed (split, insurance, dealer deviation engine logic)
 progress:
   total_phases: 5
   completed_phases: 2
-  total_plans: 6
-  completed_plans: 6
-  percent: 67
+  total_plans: 9
+  completed_plans: 7
+  percent: 78
 ---
 
 # Project State
@@ -21,23 +21,23 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-16)
 
 **Core value:** The player can sit down, play a full session of blackjack with smooth card animations and real betting stakes, and come back later to see how their cumulative record stacks up.
-**Current focus:** Phase 2: Visual Game
+**Current focus:** Phase 3: Full Casino Rules
 
 ## Current Position
 
-Phase: 2 of 5 (Visual Game)
-Plan: 1 of 3 in current phase
+Phase: 3 of 5 (Full Casino Rules)
+Plan: 2 of 3 in current phase
 Status: Executing
-Last activity: 2026-03-17 -- Plan 02-01 executed (constants, CSS design system, CardRenderer)
+Last activity: 2026-03-19 -- Plan 03-01 executed (split, insurance, dealer deviation engine logic)
 
-Progress: [███████░░░] 67%
+Progress: [████████░░] 78%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 4
+- Total plans completed: 5
 - Average duration: 3min
-- Total execution time: 0.2 hours
+- Total execution time: 0.3 hours
 
 **By Phase:**
 
@@ -45,9 +45,10 @@ Progress: [███████░░░] 67%
 |-------|-------|-------|----------|
 | 01-game-engine | 3 | 9min | 3min |
 | 02-visual-game | 1 | 3min | 3min |
+| 03-full-casino-rules | 1 | 4min | 4min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (3min), 01-02 (4min), 01-03 (2min), 02-01 (3min)
+- Last 5 plans: 01-02 (4min), 01-03 (2min), 02-01 (3min), 03-01 (4min)
 - Trend: Consistent
 
 *Updated after each plan completion*
@@ -75,6 +76,11 @@ Recent decisions affecting current work:
 - [02-01]: ANIM constants frozen with Object.freeze for immutability
 - [02-01]: CardRenderer uses createElement (not innerHTML) for card DOM structure
 - [02-01]: Card color logic uses Set for O(1) red suit lookup
+- [03-01]: Split value comparison uses #getCardSplitValue (J/Q/K all 10, A is 11)
+- [03-01]: Split aces auto-stand both hands, skip to dealer turn
+- [03-01]: Dealer deviation inverts hit/stand at 6% probability, counter accumulates per session
+- [03-01]: Multi-hand #resolveRound uses net outcome based on total payout vs total bet
+- [03-01]: #advanceHand() returns NEXT_HAND or DEALER_TURN for sequential hand play
 
 ### Pending Todos
 
@@ -86,6 +92,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-19T01:48:51.622Z
-Stopped at: Phase 3 UI-SPEC approved
-Resume file: .planning/phases/03-full-casino-rules/03-UI-SPEC.md
+Last session: 2026-03-19T02:17:15Z
+Stopped at: Completed 03-01-PLAN.md
+Resume file: .planning/phases/03-full-casino-rules/03-02-PLAN.md

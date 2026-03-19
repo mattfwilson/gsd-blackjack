@@ -28,16 +28,16 @@
 - [x] **ACTN-01**: Player can hit (take another card) on any non-bust hand
 - [x] **ACTN-02**: Player can stand (end their turn) on any hand
 - [x] **ACTN-03**: Player can double down on their first two cards — doubles bet, takes exactly one more card
-- [ ] **ACTN-04**: Player can split a pair (two cards of equal value) into two separate hands played sequentially
-- [ ] **ACTN-05**: Split is allowed once per hand only — no re-splitting
-- [ ] **ACTN-06**: Player cannot double down after splitting
-- [ ] **ACTN-07**: Player can take insurance when dealer's upcard is an ace — insurance bet is half the original bet, pays 2:1 if dealer has blackjack
+- [x] **ACTN-04**: Player can split a pair (two cards of equal value) into two separate hands played sequentially
+- [x] **ACTN-05**: Split is allowed once per hand only — no re-splitting
+- [x] **ACTN-06**: Player cannot double down after splitting
+- [x] **ACTN-07**: Player can take insurance when dealer's upcard is an ace — insurance bet is half the original bet, pays 2:1 if dealer has blackjack
 
 ### Dealer AI
 
 - [x] **DEAL-01**: Dealer follows standard hit ≤16 / stand ≥17 logic as the baseline
-- [ ] **DEAL-02**: Dealer deviates from standard logic at a low configurable probability (~5–8%) to add unpredictability
-- [ ] **DEAL-03**: Each dealer deviation is logged internally for use in stats tracking
+- [x] **DEAL-02**: Dealer deviates from standard logic at a low configurable probability (~5–8%) to add unpredictability
+- [x] **DEAL-03**: Each dealer deviation is logged internally for use in stats tracking
 
 ### Animations
 
@@ -130,13 +130,13 @@
 | ACTN-01 | Phase 1 | Complete |
 | ACTN-02 | Phase 1 | Complete |
 | ACTN-03 | Phase 1 | Complete |
-| ACTN-04 | Phase 3 | Pending |
-| ACTN-05 | Phase 3 | Pending |
-| ACTN-06 | Phase 3 | Pending |
-| ACTN-07 | Phase 3 | Pending |
+| ACTN-04 | Phase 3 | Complete |
+| ACTN-05 | Phase 3 | Complete |
+| ACTN-06 | Phase 3 | Complete |
+| ACTN-07 | Phase 3 | Complete |
 | DEAL-01 | Phase 1 | Complete |
-| DEAL-02 | Phase 3 | Pending |
-| DEAL-03 | Phase 3 | Pending |
+| DEAL-02 | Phase 3 | Complete |
+| DEAL-03 | Phase 3 | Complete |
 | ANIM-01 | Phase 2 | Pending |
 | ANIM-02 | Phase 2 | Pending |
 | ANIM-03 | Phase 2 | Pending |

@@ -108,6 +108,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 |-------|----------------|--------|-----------|
 | 1. Game Engine | 3/3 | Complete   | 2026-03-17 |
 | 2. Visual Game | 0/3 | Not started | - |
-| 3. Full Casino Rules | 0/3 | Not started | - |
+| 3. Full Casino Rules | 1/3 | In Progress|  |
 | 4. Session Stats | 0/2 | Not started | - |
 | 5. Persistence and History | 0/2 | Not started | - |
