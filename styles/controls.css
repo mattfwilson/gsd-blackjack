@@ -161,3 +161,62 @@
   opacity: 0;
   pointer-events: none;
 }
+
+/* Split button -- standard action button style */
+.bj-btn-split {
+  min-width: 80px;
+  height: 44px;
+  border-radius: 8px;
+  background: #2a3a5c;
+  color: #e8e8e8;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.bj-btn-split:hover:not(:disabled) {
+  background: #3a4f7a;
+}
+
+.bj-btn-split:disabled {
+  background: #1a2236;
+  color: #8899aa;
+  cursor: not-allowed;
+}
+
+/* Insurance buttons -- amber/gold, visually distinct from standard actions */
+.bj-btn-insurance,
+.bj-btn-no-insurance {
+  min-width: 120px;
+  height: 44px;
+  border-radius: 8px;
+  background: #d4940a;
+  color: #0a0e1a;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.bj-btn-insurance:hover,
+.bj-btn-no-insurance:hover {
+  background: #e6a810;
+}
+
+/* Insurance row container */
+.bj-insurance-row {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Inline status message for insurance outcome */
+.bj-status-message {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: #e8e8e8;
+  padding: 8px 16px;
+}
