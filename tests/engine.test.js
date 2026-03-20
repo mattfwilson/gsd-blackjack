@@ -281,11 +281,11 @@ assertEqual(createHand(5000).bet, 5000, 'createHand(5000) sets bet to 5000');
 
 console.log('\n--- GameEngine: Initialization ---\n');
 
-// Test: new GameEngine() starts with chips=100000, phase='BETTING'
+// Test: new GameEngine() starts with chips=500000, phase='BETTING'
 {
   const engine = new GameEngine();
   const gameState = engine.getState();
-  assertEqual(gameState.chips, 100000, 'GameEngine starts with 100000 chips ($1,000)');
+  assertEqual(gameState.chips, 500000, 'GameEngine starts with 500000 chips ($5,000)');
   assertEqual(gameState.phase, 'BETTING', 'GameEngine starts in BETTING phase');
   assertEqual(gameState.currentBet, 0, 'GameEngine starts with 0 currentBet');
   assertEqual(gameState.result, null, 'GameEngine starts with null result');
@@ -298,7 +298,7 @@ console.log('\n--- GameEngine: Betting ---\n');
   const engine = new GameEngine();
   const gameState = engine.placeBet(1000);
   assertEqual(gameState.phase, 'DEALING', 'placeBet(1000) transitions to DEALING');
-  assertEqual(gameState.chips, 99000, 'placeBet(1000) deducts 1000 from chips');
+  assertEqual(gameState.chips, 499000, 'placeBet(1000) deducts 1000 from chips');
   assertEqual(gameState.currentBet, 1000, 'placeBet(1000) sets currentBet to 1000');
 }
 
@@ -395,7 +395,7 @@ console.log('\n--- GameEngine: State Snapshot ---\n');
     state1.playerHands[0].cards.push({ suit: 'fake', rank: 'X', faceDown: false });
     // Get fresh state — should be uncorrupted
     const state2 = engine.getState();
-    assertEqual(state2.chips, 99000, 'Mutating snapshot does not corrupt chips');
+    assertEqual(state2.chips, 499000, 'Mutating snapshot does not corrupt chips');
     assertEqual(state2.playerHands[0].cards.length, 2, 'Mutating snapshot does not corrupt player cards');
   } else {
     console.log('PASS: Mutating snapshot does not corrupt chips (skipped — blackjack on deal)');
@@ -406,13 +406,13 @@ console.log('\n--- GameEngine: State Snapshot ---\n');
 
 console.log('\n--- GameEngine: Reset Session ---\n');
 
-// Test: resetSession() resets chips to 100000 and phase to BETTING
+// Test: resetSession() resets chips to 500000 and phase to BETTING
 {
   const engine = new GameEngine();
   engine.placeBet(1000);
   engine.deal();
   const gameState = engine.resetSession();
-  assertEqual(gameState.chips, 100000, 'resetSession() resets chips to 100000');
+  assertEqual(gameState.chips, 500000, 'resetSession() resets chips to 500000');
   assertEqual(gameState.phase, 'BETTING', 'resetSession() resets phase to BETTING');
   assertEqual(gameState.currentBet, 0, 'resetSession() resets currentBet to 0');
   assertEqual(gameState.result, null, 'resetSession() resets result to null');
@@ -742,7 +742,7 @@ console.log('\n--- GameEngine: Full Round Simulation ---\n');
   let roundCompleted = false;
   for (let attempt = 0; attempt < 50; attempt++) {
     const engine = new GameEngine();
-    const initialChips = 100000;
+    const initialChips = 500000;
     engine.placeBet(2000);
     let gameState = engine.deal();
 
@@ -863,7 +863,7 @@ console.log('\n--- Final Integration Validation ---\n');
 // Test: Complete round flow — placeBet(1000) -> deal() -> stand() -> verify ROUND_OVER + chips changed correctly
 {
   const engine = new GameEngine();
-  const initialChips = 100000;
+  const initialChips = 500000;
   engine.placeBet(1000);
   let state = engine.deal();
 
@@ -878,7 +878,7 @@ console.log('\n--- Final Integration Validation ---\n');
 // Test: Multiple rounds — play 3 consecutive rounds, verify chips accumulate correctly
 {
   const engine = new GameEngine();
-  let expectedChips = 100000;
+  let expectedChips = 500000;
 
   for (let round = 0; round < 3; round++) {
     const betAmount = 1000;

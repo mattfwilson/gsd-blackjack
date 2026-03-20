@@ -17,7 +17,7 @@ export class GameEngine {
 
   constructor() {
     this.#deck = new Deck(6);
-    this.#chips = 100000;
+    this.#chips = 500000;
     this.#phase = 'BETTING';
     this.#currentBet = 0;
     this.#playerHands = [];
@@ -389,7 +389,7 @@ export class GameEngine {
   }
 
   resetSession() {
-    this.#chips = 100000;
+    this.#chips = 500000;
     this.#phase = 'BETTING';
     this.#currentBet = 0;
     this.#playerHands = [];
