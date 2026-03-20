@@ -376,6 +376,18 @@ export class GameEngine {
     }
   }
 
+  resetRound() {
+    this.#phase = 'BETTING';
+    this.#currentBet = 0;
+    this.#playerHands = [];
+    this.#dealerHand = createHand();
+    this.#result = null;
+    this.#activeHandIndex = 0;
+    this.#hasSplit = false;
+    this.#insuranceBet = 0;
+    return this.#getState();
+  }
+
   resetSession() {
     this.#chips = 100000;
     this.#phase = 'BETTING';

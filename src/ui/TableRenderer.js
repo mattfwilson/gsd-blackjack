@@ -18,6 +18,7 @@ export class TableRenderer {
     this.controlsZoneEl = document.querySelector('.bj-zone-controls');
     this.shoeEl = document.getElementById('bj-shoe');
     this.discardEl = document.getElementById('bj-discard');
+    this.splitHandGroupEl = document.getElementById('bj-hand-group-split');
 
     // Cache button references
     this.chipBtns = document.querySelectorAll('.bj-chip-btn');
@@ -277,6 +278,14 @@ export class TableRenderer {
   /**
    * Clear active hand glow from all hand areas.
    */
+  showSplitHandGroup() {
+    this.splitHandGroupEl.style.display = '';
+  }
+
+  hideSplitHandGroup() {
+    this.splitHandGroupEl.style.display = 'none';
+  }
+
   clearActiveHand() {
     this.playerHand0El.closest('.bj-hand-area')?.classList.remove('bj-hand-area--active');
     this.playerHand1El.closest('.bj-hand-area')?.classList.remove('bj-hand-area--active');
@@ -467,6 +476,7 @@ export class TableRenderer {
     this.dealerHandEl.innerHTML = '';
     this.playerHand0El.innerHTML = '';
     this.playerHand1El.innerHTML = '';
+    this.hideSplitHandGroup();
     this.dealerScoreEl.textContent = '';
 
     // Remove player score elements

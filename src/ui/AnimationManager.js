@@ -9,6 +9,8 @@ export class AnimationManager {
 
   get isBusy() { return this.#busy; }
 
+  forceUnlock() { this.#busy = false; }
+
   /**
    * Animate cards from shoe to hand positions with staggered timing.
    * Cards should already be in the DOM at their final layout position with opacity 0.

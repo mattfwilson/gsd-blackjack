@@ -108,6 +108,16 @@ export class UIController {
         this.#handleDeclineInsurance();
       }
     });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        this.#animManager.forceUnlock();
+        this.#engine.resetRound();
+        this.#pendingBet = 0;
+        this.#renderer.clearTable();
+        this.#render();
+      }
+    });
   }
 
   async #handleDeal() {
@@ -304,6 +314,7 @@ export class UIController {
     const state = this.#engine.getState();
 
     // Render both hands
+    this.#renderer.showSplitHandGroup();
     this.#renderer.renderHand(this.#renderer.playerHand0El, state.playerHands[0].cards);
     this.#renderer.renderPlayerScore(state.playerHands[0], this.#renderer.playerHand0El);
     this.#renderer.renderHand(this.#renderer.playerHand1El, state.playerHands[1].cards);
