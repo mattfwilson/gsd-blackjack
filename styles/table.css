@@ -131,7 +131,6 @@ html, body {
 }
 
 .bj-hand-area {
-  min-height: 224px;
   position: relative;
 }
 
@@ -151,4 +150,5 @@ html, body {
   box-shadow: 0 0 12px 4px rgba(230, 184, 0, 0.6);
   border-radius: 8px;
   transition: box-shadow 0.3s ease;
+  clip-path: inset(-20px -20px 0px -20px round 8px 8px 0px 0px);
 }

@@ -40,12 +40,14 @@ export class TableRenderer {
     cards.forEach((card, i) => {
       const el = createCardElement(card);
       el.style.position = 'absolute';
+      el.style.top = '0';
       el.style.left = `${i * 24}px`;
       el.style.opacity = '0';
       containerEl.appendChild(el);
     });
     const fanWidth = cards.length > 0 ? (cards.length - 1) * 24 + 160 : 160;
     containerEl.style.width = `${fanWidth}px`;
+    containerEl.style.height = '224px';
   }
 
   /**
@@ -68,6 +70,7 @@ export class TableRenderer {
     const existingCount = containerEl.querySelectorAll('.bj-card').length;
     const el = createCardElement(card);
     el.style.position = 'absolute';
+    el.style.top = '0';
     el.style.left = `${existingCount * 24}px`;
     el.style.opacity = '0';
     containerEl.appendChild(el);
