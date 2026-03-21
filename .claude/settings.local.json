@@ -12,7 +12,16 @@
       "WebSearch",
       "Bash(cd \"C:/Users/mattf/Desktop/Plans/Blackjack\" && node --input-type=module <<'EOF'\nimport './src/ui/UIController.js';\nconsole.log\\('UIController loaded OK'\\);\nEOF)",
       "Bash(cd \"C:/Users/mattf/Desktop/Plans/Blackjack\" && node --check src/ui/AnimationManager.js && echo \"AnimationManager OK\" && node --check src/ui/UIController.js && echo \"UIController OK\" && node --check src/ui/TableRenderer.js && echo \"TableRenderer OK\" && node --check src/ui/CardRenderer.js && echo \"CardRenderer OK\")",
-      "Skill(gsd:progress)"
+      "Skill(gsd:progress)",
+      "Bash(cd \"C:/Users/mattf/Desktop/Plans/Blackjack\" && npx serve . --no-clipboard)",
+      "Bash(python -m http.server 8080)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code} %{content_type}\" http://localhost:8080/src/ui/UIController.js)",
+      "Bash(node --version && npx --yes serve --version 2>/dev/null | head -1)",
+      "Bash(pkill -f \"python -m http.server\" 2>/dev/null; npx serve -p 8080)",
+      "Bash(tasklist | grep -i python)",
+      "Bash(taskkill /PID 15500 /F && taskkill /PID 19100 /F)",
+      "Bash(taskkill //PID 15500 //F; taskkill //PID 19100 //F)",
+      "Bash(npx serve:*)"
     ]
   }
 }

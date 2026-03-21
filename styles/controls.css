@@ -2,7 +2,7 @@
 
 .bj-chip-row {
   display: flex;
-  gap: 8px;
+  gap: 12px;
   justify-content: center;
 }
 
@@ -13,13 +13,13 @@
 }
 
 .bj-chip-btn {
-  min-width: 64px;
-  height: 44px;
+  min-width: 96px;
+  height: 66px;
   border-radius: 8px;
   background: #2a3a5c;
   color: #e8e8e8;
   border: none;
-  font-size: 14px;
+  font-size: 21px;
   font-weight: 600;
   cursor: pointer;
 }
@@ -99,13 +99,13 @@
 }
 
 .bj-btn-clear {
-  min-width: 80px;
-  height: 44px;
+  min-width: 96px;
+  height: 66px;
   border-radius: 8px;
   background: #2a3a5c;
   color: #e8e8e8;
   border: none;
-  font-size: 14px;
+  font-size: 21px;
   font-weight: 600;
   cursor: pointer;
 }
